@@ -3,6 +3,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import './OrderForm.css';
 
 function OrderForm({ onSubmit, order }) {
   const [name, setName] = useState('');
@@ -63,40 +64,29 @@ function OrderForm({ onSubmit, order }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
+    <form onSubmit={handleSubmit} className="order-form">
+      <div className="form-group">
         <label>Name:</label>
         <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
       </div>
-      <div>
+      <div className="form-group">
         <label>Email:</label>
         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
       </div>
-      <div>
+      <div className="form-group">
         <label>Address:</label>
         <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} required />
       </div>
-      <div>
+      <div className="form-group">
         <label>Total Quantity:</label>
         <input type="number" value={totalQuantity} onChange={(e) => setTotalQuantity(e.target.value)} required />
       </div>
-      <div>
+      <div className="form-group">
         <label>Details:</label>
         {details.map((detail, index) => (
-          <div key={detail.variant_id}>
-            <input
-              type="text"
-              placeholder="Variant ID"
-              value={detail.variant_id}
-              readOnly
-            />
-            <input
-              type="number"
-              placeholder="Quantity"
-              value={detail.quantity}
-              onChange={(e) => handleDetailChange(index, 'quantity', e.target.value)}
-              required
-            />
+          <div key={detail.variant_id} className="detail-item">
+            <input type="text" placeholder="Variant ID" value={detail.variant_id} readOnly />
+            <input type="number" placeholder="Quantity" value={detail.quantity} onChange={(e) => handleDetailChange(index, 'quantity', e.target.value)} required />
             <button type="button" onClick={() => handleRemoveDetail(index)}>Remove</button>
           </div>
         ))}
