@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 function OrderList({ orders, onEdit, onDelete }) {
-  if (!Array.isArray(orders)) {
+  if (orders.length === 0) {
     return <p>No orders found.</p>;
   }
 
