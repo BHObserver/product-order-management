@@ -13,8 +13,8 @@ function OrdersPage() {
 
   const fetchOrders = async () => {
     try {
-      const data = await getOrders();
-      setOrders(Array.isArray(data) ? data : []);
+      const response = await getOrders();
+      setOrders(Array.isArray(response.data.data) ? response.data.data : []);
     } catch (err) {
       setError('Failed to fetch orders');
       console.error(err);
