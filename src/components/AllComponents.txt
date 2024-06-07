@@ -1,0 +1,442 @@
+//Navbar.js
+
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+function Navbar() {
+  return (
+    <nav>
+      <ul>
+        <li>
+          <Link to="/">Orders</Link>
+        </li>
+        <li>
+          <Link to="/products">Products</Link>
+        </li>
+      </ul>
+    </nav>
+  );
+}
+
+export default Navbar;
+
+// OrderForm.js
+
+/* eslint-disable jsx-a11y/label-has-associated-control */
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+
+function OrderForm({ onSubmit, order }) {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
+  const [totalQuantity, setTotalQuantity] = useState('');
+  const [details, setDetails] = useState(order ? order.details : [{ variant_id: 1, quantity: '' }]);
+  const [counter, setCounter] = useState(order ? order.details.length + 1 : 2);
+
+  useEffect(() => {
+    if (order) {
+      setName(order.name);
+      setEmail(order.email);
+      setAddress(order.address);
+      setTotalQuantity(order.total_quantity);
+      setDetails(order.details);
+    } else {
+      setName('');
+      setEmail('');
+      setAddress('');
+      setTotalQuantity('');
+      setDetails([{ variant_id: 1, quantity: '' }]);
+      setCounter(2);
+    }
+  }, [order]);
+
+  const handleDetailChange = (index, key, value) => {
+    const updatedDetails = [...details];
+    if (updatedDetails[index]) {
+      updatedDetails[index][key] = value;
+      setDetails(updatedDetails);
+    }
+  };
+
+  const handleAddDetail = () => {
+    setDetails([...details, { variant_id: counter, quantity: '' }]);
+    setCounter(counter + 1);
+  };
+
+  const handleRemoveDetail = (index) => {
+    const updatedDetails = details.filter((_, i) => i !== index);
+    setDetails(updatedDetails);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit({
+      name, email, address, total_quantity: totalQuantity, details,
+    });
+    if (!order) {
+      setName('');
+      setEmail('');
+      setAddress('');
+      setTotalQuantity('');
+      setDetails([{ variant_id: 1, quantity: '' }]);
+      setCounter(2);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Name:</label>
+        <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+      </div>
+      <div>
+        <label>Email:</label>
+        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+      </div>
+      <div>
+        <label>Address:</label>
+        <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} required />
+      </div>
+      <div>
+        <label>Total Quantity:</label>
+        <input type="number" value={totalQuantity} onChange={(e) => setTotalQuantity(e.target.value)} required />
+      </div>
+      <div>
+        <label>Details:</label>
+        {details.map((detail, index) => (
+          <div key={detail.variant_id}>
+            <input
+              type="text"
+              placeholder="Variant ID"
+              value={detail.variant_id}
+              readOnly
+            />
+            <input
+              type="number"
+              placeholder="Quantity"
+              value={detail.quantity}
+              onChange={(e) => handleDetailChange(index, 'quantity', e.target.value)}
+              required
+            />
+            <button type="button" onClick={() => handleRemoveDetail(index)}>Remove</button>
+          </div>
+        ))}
+        <button type="button" onClick={handleAddDetail}>Add Detail</button>
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+
+OrderForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  order: PropTypes.shape({
+    name: PropTypes.string,
+    email: PropTypes.string,
+    address: PropTypes.string,
+    total_quantity: PropTypes.number,
+    details: PropTypes.arrayOf(
+      PropTypes.shape({
+        variant_id: PropTypes.number,
+        quantity: PropTypes.number,
+      }),
+    ),
+  }),
+};
+
+OrderForm.defaultProps = {
+  order: null,
+};
+
+export default OrderForm;
+
+// OrderList.js
+
+import React from 'react';
+import PropTypes from 'prop-types';
+
+function OrderList({ orders, onEdit, onDelete }) {
+  if (orders.length === 0) {
+    return <p>No orders found.</p>;
+  }
+
+  return (
+    <div>
+      <h2>Orders</h2>
+      <ul>
+        {orders.map((order) => (
+          <li key={order.id}>
+            {order.name}
+            {' '}
+            -
+            {order.email}
+            {' '}
+            -
+            {order.total_quantity}
+            <button type="button" onClick={() => onEdit(order.id)}>Edit</button>
+            <button type="button" onClick={() => onDelete(order.id)}>Delete</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+OrderList.propTypes = {
+  orders: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number,
+    name: PropTypes.string,
+    email: PropTypes.string,
+    total_quantity: PropTypes.number,
+  })).isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+};
+
+export default OrderList;
+
+
+// ProductDropdown.js
+
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { getProducts } from '../services/api';
+
+const ProductDropdown = ({ onSelect }) => {
+  const [products, setProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState('');
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await getProducts();
+        setProducts(data);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const handleSelectChange = (event) => {
+    const productId = event.target.value;
+    setSelectedProduct(productId);
+    const selectedProduct = products.find((product) => product.id === parseInt(productId, 10));
+    onSelect(selectedProduct);
+  };
+
+  return (
+    <select value={selectedProduct} onChange={handleSelectChange}>
+      <option value="" disabled>Select a product</option>
+      {products.map((product) => (
+        <option key={product.id} value={product.id}>{product.name}</option>
+      ))}
+    </select>
+  );
+};
+
+ProductDropdown.propTypes = {
+  onSelect: PropTypes.func.isRequired,
+};
+
+export default ProductDropdown;
+
+
+// ProductForm.js
+
+/* eslint-disable jsx-a11y/label-has-associated-control */
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+
+const generateRandomId = () => Math.floor(1000 + Math.random() * 9000);
+
+const ProductForm = ({ product, onSubmit }) => {
+  const [name, setName] = useState(product?.name || '');
+  const [brand, setBrand] = useState(product?.brand || '');
+  const [type, setType] = useState(product?.type || '');
+  const [origin, setOrigin] = useState(product?.origin || '');
+  const [variants, setVariants] = useState(product?.variants || [
+    {
+      id: generateRandomId(), color: '', specification: '', size: '',
+    }]);
+
+  useEffect(() => {
+    if (product) {
+      setName(product.name);
+      setBrand(product.brand);
+      setType(product.type);
+      setOrigin(product.origin);
+      setVariants(product.variants);
+    }
+  }, [product]);
+
+  const handleVariantChange = (id, field, value) => {
+    const newVariants = variants.map((variant) => {
+      if (variant.id === id) {
+        return { ...variant, [field]: value };
+      }
+      return variant;
+    });
+    setVariants(newVariants);
+  };
+
+  const handleAddVariant = () => {
+    setVariants([...variants, {
+      id: generateRandomId(), color: '', specification: '', size: '',
+    }]);
+  };
+
+  const handleRemoveVariant = (id) => {
+    setVariants(variants.filter((variant) => variant.id !== id));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit({
+      name, brand, type, origin, variants,
+    });
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label htmlFor="name">Name:</label>
+      <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} required />
+
+      <label htmlFor="brand">Brand:</label>
+      <input type="text" id="brand" value={brand} onChange={(e) => setBrand(e.target.value)} required />
+
+      <label htmlFor="type">Type:</label>
+      <input type="text" id="type" value={type} onChange={(e) => setType(e.target.value)} required />
+
+      <label htmlFor="origin">Origin:</label>
+      <input type="text" id="origin" value={origin} onChange={(e) => setOrigin(e.target.value)} required />
+
+      <h4>Variants</h4>
+      {variants.map((variant) => (
+        <div key={variant.id}>
+          <label htmlFor={`color-${variant.id}`}>Color:</label>
+          <input
+            type="text"
+            id={`color-${variant.id}`}
+            value={variant.color}
+            onChange={(e) => handleVariantChange(variant.id, 'color', e.target.value)}
+            required
+          />
+
+          <label htmlFor={`specification-${variant.id}`}>Specification:</label>
+          <input
+            type="text"
+            id={`specification-${variant.id}`}
+            value={variant.specification}
+            onChange={(e) => handleVariantChange(variant.id, 'specification', e.target.value)}
+            required
+          />
+
+          <label htmlFor={`size-${variant.id}`}>Size:</label>
+          <input
+            type="text"
+            id={`size-${variant.id}`}
+            value={variant.size}
+            onChange={(e) => handleVariantChange(variant.id, 'size', e.target.value)}
+            required
+          />
+
+          {variants.length > 1 && (
+            <button type="button" onClick={() => handleRemoveVariant(variant.id)}>Remove</button>
+          )}
+        </div>
+      ))}
+      <button type="button" onClick={handleAddVariant}>Add Variant</button>
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
+
+ProductForm.propTypes = {
+  product: PropTypes.shape({
+    name: PropTypes.string,
+    brand: PropTypes.string,
+    type: PropTypes.string,
+    origin: PropTypes.string,
+    variants: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      color: PropTypes.string,
+      specification: PropTypes.string,
+      size: PropTypes.string,
+    })),
+  }),
+  onSubmit: PropTypes.func.isRequired,
+};
+
+ProductForm.defaultProps = {
+  product: null,
+};
+
+export default ProductForm;
+
+// ProductList.js
+
+import React from 'react';
+import PropTypes from 'prop-types';
+
+const ProductList = ({ products, onEdit, onDelete }) => (
+  <div>
+    {products.map((product) => (
+      <div key={`product-${product.id}`}>
+        <h3>{product.name}</h3>
+        <p>
+          Brand:
+          {product.brand}
+        </p>
+        <p>
+          Type:
+          {product.type}
+        </p>
+        <p>
+          Origin:
+          {product.origin}
+        </p>
+        <ul>
+          {product.variants.map((variant) => (
+            <li key={`variant-${variant.id}`}>
+              Color:
+              {' '}
+              {variant.color}
+              , Specification:
+              {' '}
+              {variant.specification}
+              , Size:
+              {' '}
+              {variant.size}
+            </li>
+          ))}
+        </ul>
+        <button type="button" onClick={() => onEdit(product)}>Edit</button>
+        <button type="button" onClick={() => onDelete(product.id)}>Delete</button>
+      </div>
+    ))}
+  </div>
+);
+
+ProductList.propTypes = {
+  products: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    brand: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    origin: PropTypes.string.isRequired,
+    variants: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      color: PropTypes.string.isRequired,
+      specification: PropTypes.string.isRequired,
+      size: PropTypes.string.isRequired,
+    })).isRequired,
+  })).isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+};
+
+export default ProductList;
+
