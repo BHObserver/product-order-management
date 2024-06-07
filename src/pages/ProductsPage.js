@@ -1,72 +1,40 @@
-// ProductsPage.js
-
-import React, { useState, useEffect } from 'react';
+/* eslint-disable import/no-extraneous-dependencies */
+// src/pages/ProductsPage.js
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  getProducts, createProduct, updateProduct, deleteProduct,
-} from '../services/api';
+  fetchProducts, addProduct, modifyProduct, removeProduct,
+} from '../slices/productsSlice';
 import ProductList from '../components/ProductList';
 import ProductForm from '../components/ProductForm';
 
 const ProductsPage = () => {
-  const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [isFormVisible, setFormVisible] = useState(false);
+  const dispatch = useDispatch();
+  const { products, loading, error } = useSelector((state) => state.products);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await getProducts();
-        console.log('Fetched products data:', response); // Log the fetched data to understand its structure
-        setProducts(Array.isArray(response.data.data) ? response.data.data : []);
-      } catch (error) {
-        console.error('Failed to fetch products:', error);
-      }
-    };
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
-    fetchProducts();
-  }, []);
-
-  const handleCreate = () => {
-    setSelectedProduct(null);
-    setFormVisible(true);
-  };
-
-  const handleEdit = (product) => {
-    setSelectedProduct(product);
-    setFormVisible(true);
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      await deleteProduct(id);
-      setProducts(products.filter((product) => product.id !== id));
-    } catch (error) {
-      console.error('Failed to delete product:', error);
+  const handleCreateOrUpdateProduct = (product) => {
+    if (product.id) {
+      dispatch(modifyProduct({ id: product.id, product }));
+    } else {
+      dispatch(addProduct(product));
     }
   };
 
-  const handleSubmit = async (product) => {
-    try {
-      if (selectedProduct) {
-        const updatedProduct = await updateProduct(selectedProduct.id, product);
-        setProducts(products.map((p) => (p.id === selectedProduct.id ? updatedProduct : p)));
-      } else {
-        const newProduct = await createProduct(product);
-        setProducts([...products, newProduct]);
-      }
-      setFormVisible(false);
-    } catch (error) {
-      console.error('Failed to save product:', error);
-    }
+  const handleDeleteProduct = (id) => {
+    dispatch(removeProduct(id));
   };
 
   return (
     <div>
-      <button type="button" onClick={handleCreate}>Create Product</button>
-      {isFormVisible && (
-        <ProductForm product={selectedProduct} onSubmit={handleSubmit} />
-      )}
-      <ProductList products={products} onEdit={handleEdit} onDelete={handleDelete} />
+      <h1>Products</h1>
+      {loading && <p>Loading...</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <ProductForm onSubmit={handleCreateOrUpdateProduct} />
+      <ProductList products={products} onDelete={handleDeleteProduct} />
     </div>
   );
 };
