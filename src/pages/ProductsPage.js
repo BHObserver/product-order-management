@@ -1,3 +1,5 @@
+// ProductsPage.js
+
 import React, { useState, useEffect } from 'react';
 import {
   getProducts, createProduct, updateProduct, deleteProduct,
