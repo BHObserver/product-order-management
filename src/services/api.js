@@ -1,14 +1,107 @@
-// src/services/api.js
 import axios from 'axios';
 
-const API_BASE_URL = 'http://reactjr.coderslab.online/api/';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-export const getProducts = () => axios.get(`${API_BASE_URL}products`);
-export const createProduct = (product) => axios.post(`${API_BASE_URL}products`, product);
-export const updateProduct = (id, product) => axios.put(`${API_BASE_URL}products/${id}`, product);
-export const deleteProduct = (id) => axios.delete(`${API_BASE_URL}products/${id}`);
+// Orders API
+export const getOrders = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/orders`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    throw error;
+  }
+};
 
-export const getOrders = () => axios.get(`${API_BASE_URL}orders`);
-export const createOrder = (order) => axios.post(`${API_BASE_URL}orders`, order);
-export const updateOrder = (id, order) => axios.put(`${API_BASE_URL}orders/${id}`, order);
-export const deleteOrder = (id) => axios.delete(`${API_BASE_URL}orders/${id}`);
+export const createOrder = async (order) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/orders`, order, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating order:', error);
+    throw error;
+  }
+};
+
+export const updateOrder = async (id, order) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/orders/${id}`, {
+      ...order,
+      _method: 'PUT',
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating order:', error);
+    throw error;
+  }
+};
+
+export const deleteOrder = async (id) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/orders/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting order:', error);
+    throw error;
+  }
+};
+
+// Products API
+export const getProducts = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/products`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    throw error;
+  }
+};
+
+export const createProduct = async (product) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/products`, product, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating product:', error);
+    throw error;
+  }
+};
+
+export const updateProduct = async (id, product) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/products/${id}`, {
+      ...product,
+      _method: 'PUT',
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating product:', error);
+    throw error;
+  }
+};
+
+export const deleteProduct = async (id) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/products/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    throw error;
+  }
+};
