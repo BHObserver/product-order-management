@@ -10,14 +10,14 @@ function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
   const fetchProducts = async () => {
     const response = await getProducts();
     setProducts(response.data);
   };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const handleCreateOrUpdateProduct = async (product) => {
     if (editingProduct) {
