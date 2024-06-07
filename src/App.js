@@ -1,14 +1,18 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import ProductsPage from './pages/ProductsPage';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import OrdersPage from './pages/OrdersPage';
+import ProductsPage from './pages/ProductsPage';
+import Navbar from './components/Navbar'; // Import Navbar
 
 function App() {
   return (
     <Router>
-      <Route path="/products" component={ProductsPage} />
-      <Route path="/orders" component={OrdersPage} />
-      <Route path="/" exact component={ProductsPage} />
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<OrdersPage />} />
+        <Route path="/products" element={<ProductsPage />} />
+        {/* Add more routes as needed */}
+      </Routes>
     </Router>
   );
 }
