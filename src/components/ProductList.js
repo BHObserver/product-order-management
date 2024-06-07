@@ -1,27 +1,22 @@
-// src/components/ProductList.js
 import React from 'react';
+import PropTypes from 'prop-types';
 
-function ProductList({ products, onEdit, onDelete }) {
+function ProductList({ products }) {
+  if (!Array.isArray(products)) {
+    return <div>No products available</div>;
+  }
+
   return (
-    <div>
-      <h2>Products</h2>
-      <ul>
-        {products.map((product) => (
-          <li key={product.id}>
-            {product.name}
-            {' '}
-            -
-            {product.brand}
-            {' '}
-            -
-            {product.type}
-            <button onClick={() => onEdit(product.id)}>Edit</button>
-            <button onClick={() => onDelete(product.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ul>
+      {products.map((product) => (
+        <li key={product.id}>{product.name}</li>
+      ))}
+    </ul>
   );
 }
+
+ProductList.propTypes = {
+  products: PropTypes.array.isRequired,
+};
 
 export default ProductList;
