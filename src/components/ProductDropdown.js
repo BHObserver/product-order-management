@@ -1,7 +1,9 @@
-// ProductDropdown.js
-
+/* eslint-disable import/no-extraneous-dependencies */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import {
+  Select, MenuItem, FormControl, InputLabel,
+} from '@mui/material';
 import { getProducts } from '../services/api';
 
 const ProductDropdown = ({ onSelect }) => {
@@ -29,12 +31,15 @@ const ProductDropdown = ({ onSelect }) => {
   };
 
   return (
-    <select value={selectedProduct} onChange={handleSelectChange}>
-      <option value="" disabled>Select a product</option>
-      {products.map((product) => (
-        <option key={product.id} value={product.id}>{product.name}</option>
-      ))}
-    </select>
+    <FormControl fullWidth>
+      <InputLabel>Select a product</InputLabel>
+      <Select value={selectedProduct} onChange={handleSelectChange}>
+        <MenuItem value="" disabled>Select a product</MenuItem>
+        {products.map((product) => (
+          <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 };
 
