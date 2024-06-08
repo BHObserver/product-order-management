@@ -7,19 +7,16 @@ import {
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
   const response = await getProducts();
-  console.log(response);
   return response.data.data;
 });
 
 export const addProduct = createAsyncThunk('products/addProduct', async (product) => {
   const response = await createProduct(product);
-  console.log(response);
   return response.data.data;
 });
 
 export const modifyProduct = createAsyncThunk('products/modifyProduct', async ({ id, product }) => {
   const response = await updateProduct(id, product);
-  console.log(response);
   return response.data.data;
 });
 
