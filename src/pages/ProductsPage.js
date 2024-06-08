@@ -1,15 +1,16 @@
 /* eslint-disable import/no-extraneous-dependencies */
-// src/pages/ProductsPage.js
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, Route, Routes } from 'react-router-dom';
 import {
   fetchProducts, addProduct, modifyProduct, removeProduct,
 } from '../slices/productsSlice';
-import ProductList from '../components/ProductList';
+import ProductListWithButton from '../components/ProductListWithButton';
 import ProductForm from '../components/ProductForm';
 
 const ProductsPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { products, loading, error } = useSelector((state) => state.products);
 
   useEffect(() => {
@@ -22,6 +23,7 @@ const ProductsPage = () => {
     } else {
       dispatch(addProduct(product));
     }
+    navigate('/products'); // Redirect to products list after submission
   };
 
   const handleDeleteProduct = (id) => {
@@ -29,13 +31,27 @@ const ProductsPage = () => {
   };
 
   return (
-    <div>
-      <h1>Products</h1>
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <ProductForm onSubmit={handleCreateOrUpdateProduct} />
-      <ProductList products={products} onDelete={handleDeleteProduct} />
-    </div>
+    <Routes>
+      <Route
+        path="/"
+        element={(
+          <ProductListWithButton
+            products={products}
+            loading={loading}
+            error={error}
+            onDelete={handleDeleteProduct}
+          />
+        )}
+      />
+      <Route
+        path="new"
+        element={<ProductForm onSubmit={handleCreateOrUpdateProduct} />}
+      />
+      <Route
+        path="edit/:id"
+        element={<ProductForm onSubmit={handleCreateOrUpdateProduct} />}
+      />
+    </Routes>
   );
 };
 
