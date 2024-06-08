@@ -1,8 +1,13 @@
+/* eslint-disable import/no-extraneous-dependencies */
 // OrderForm.js
 
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import {
+  TextField, Button, Grid, Paper, Typography, IconButton,
+} from '@mui/material';
+import { Add, Remove } from '@mui/icons-material';
 
 function OrderForm({ onSubmit, order }) {
   const [name, setName] = useState('');
@@ -63,47 +68,91 @@ function OrderForm({ onSubmit, order }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Name:</label>
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
-      </div>
-      <div>
-        <label>Email:</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-      </div>
-      <div>
-        <label>Address:</label>
-        <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} required />
-      </div>
-      <div>
-        <label>Total Quantity:</label>
-        <input type="number" value={totalQuantity} onChange={(e) => setTotalQuantity(e.target.value)} required />
-      </div>
-      <div>
-        <label>Details:</label>
-        {details.map((detail, index) => (
-          <div key={detail.variant_id}>
-            <input
-              type="text"
-              placeholder="Variant ID"
-              value={detail.variant_id}
-              readOnly
-            />
-            <input
-              type="number"
-              placeholder="Quantity"
-              value={detail.quantity}
-              onChange={(e) => handleDetailChange(index, 'quantity', e.target.value)}
+    <Paper style={{ padding: 16 }}>
+      <Typography variant="h6" gutterBottom>
+        {order ? 'Edit Order' : 'Create Order'}
+      </Typography>
+      <form onSubmit={handleSubmit}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Name"
+              fullWidth
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               required
             />
-            <button type="button" onClick={() => handleRemoveDetail(index)}>Remove</button>
-          </div>
-        ))}
-        <button type="button" onClick={handleAddDetail}>Add Detail</button>
-      </div>
-      <button type="submit">Submit</button>
-    </form>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Email"
+              fullWidth
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Address"
+              fullWidth
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Total Quantity"
+              fullWidth
+              type="number"
+              value={totalQuantity}
+              onChange={(e) => setTotalQuantity(e.target.value)}
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6">Details</Typography>
+            {details.map((detail, index) => (
+              <Grid container spacing={2} key={detail.variant_id} alignItems="center">
+                <Grid item xs={4}>
+                  <TextField
+                    label="Variant ID"
+                    value={detail.variant_id}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    label="Quantity"
+                    type="number"
+                    value={detail.quantity}
+                    onChange={(e) => handleDetailChange(index, 'quantity', e.target.value)}
+                    required
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <IconButton onClick={() => handleRemoveDetail(index)}>
+                    <Remove />
+                  </IconButton>
+                </Grid>
+              </Grid>
+            ))}
+            <Button variant="outlined" onClick={handleAddDetail} startIcon={<Add />}>
+              Add Detail
+            </Button>
+          </Grid>
+          <Grid item xs={12}>
+            <Button type="submit" variant="contained" color="primary">
+              Submit
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
+    </Paper>
   );
 }
 
