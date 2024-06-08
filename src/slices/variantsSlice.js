@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { getVariants } from '../services/api'; // Adjust the import path as necessary
 
 export const fetchVariants = createAsyncThunk(
   'variants/fetchVariants',
   async (productId) => {
-    const response = await axios.get(`/api/products/${productId}/variants`);
-    return response.data.data;
+    const response = await getVariants(productId);
+    return response.data.variants;
   },
 );
 
