@@ -2,21 +2,40 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Table, TableHead, TableBody, TableRow, TableCell,
-  Paper, TableContainer, Typography, IconButton, Tooltip, Pagination,
+  Table, TableHead, TableBody, TableRow,
+  TableCell, Paper, TableContainer, Typography, IconButton, Tooltip, Pagination,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { styled } from '@mui/system';
+
+const Container = styled('div')({
+  padding: '20px',
+});
+
+const StyledTableContainer = styled(TableContainer)({
+  marginBottom: '20px',
+});
+
+const StyledTable = styled(Table)({
+  minWidth: 650,
+});
+
+const StyledPagination = styled(Pagination)({
+  marginTop: 20,
+  display: 'flex',
+  justifyContent: 'center',
+});
 
 const ProductList = ({
   products, onEdit, onDelete, totalPages, currentPage, onPageChange,
 }) => (
-  <div style={{ padding: '20px' }}>
+  <Container>
     <Typography variant="h4" gutterBottom>
       Product List
     </Typography>
-    <TableContainer component={Paper}>
-      <Table>
+    <StyledTableContainer component={Paper}>
+      <StyledTable>
         <TableHead>
           <TableRow>
             <TableCell>ID</TableCell>
@@ -56,15 +75,14 @@ const ProductList = ({
             </TableRow>
           ))}
         </TableBody>
-      </Table>
-    </TableContainer>
-    <Pagination
+      </StyledTable>
+    </StyledTableContainer>
+    <StyledPagination
       count={totalPages}
       page={currentPage}
       onChange={(e, page) => onPageChange(page)}
-      style={{ marginTop: 20, display: 'flex', justifyContent: 'center' }}
     />
-  </div>
+  </Container>
 );
 
 ProductList.propTypes = {
