@@ -1,131 +1,181 @@
-// ProductForm.js
-
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import {
+  TextField, Button, Grid, Paper, Typography, IconButton,
+} from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts } from '../slices/productsSlice';
 
-const generateRandomId = () => Math.floor(1000 + Math.random() * 9000);
-
-const ProductForm = ({ product, onSubmit }) => {
-  const [name, setName] = useState(product?.name || '');
-  const [brand, setBrand] = useState(product?.brand || '');
-  const [type, setType] = useState(product?.type || '');
-  const [origin, setOrigin] = useState(product?.origin || '');
-  const [variants, setVariants] = useState(product?.variants || [
-    {
-      id: generateRandomId(), color: '', specification: '', size: '',
-    }]);
+const ProductForm = ({ onSubmit }) => {
+  const [name, setName] = useState('');
+  const [brand, setBrand] = useState('');
+  const [type, setType] = useState('');
+  const [origin, setOrigin] = useState('');
+  const [variants, setVariants] = useState([{ color: '', specification: '', size: '' }]);
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const product = useSelector((state) => state
+    .products.products.find((p) => p.id === parseInt(id, 10)));
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (product) {
-      setName(product.name);
-      setBrand(product.brand);
-      setType(product.type);
-      setOrigin(product.origin);
-      setVariants(product.variants);
-    }
-  }, [product]);
-
-  const handleVariantChange = (id, field, value) => {
-    const newVariants = variants.map((variant) => {
-      if (variant.id === id) {
-        return { ...variant, [field]: value };
+    if (id) {
+      if (!product) {
+        dispatch(fetchProducts(id));
+      } else {
+        setName(product.name);
+        setBrand(product.brand);
+        setType(product.type);
+        setOrigin(product.origin);
+        setVariants(product.variants || [{ color: '', specification: '', size: '' }]);
       }
-      return variant;
-    });
-    setVariants(newVariants);
-  };
-
-  const handleAddVariant = () => {
-    setVariants([...variants, {
-      id: generateRandomId(), color: '', specification: '', size: '',
-    }]);
-  };
-
-  const handleRemoveVariant = (id) => {
-    setVariants(variants.filter((variant) => variant.id !== id));
-  };
+    } else {
+      setName('');
+      setBrand('');
+      setType('');
+      setOrigin('');
+      setVariants([{ color: '', specification: '', size: '' }]);
+    }
+  }, [dispatch, id, product]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit({
-      name, brand, type, origin, variants,
+      id, name, brand, type, origin, variants,
     });
+    navigate('/products'); // Redirect to products list after submission
+  };
+
+  const handleBack = () => {
+    navigate('/products');
+  };
+
+  const handleAddVariant = () => {
+    setVariants([...variants, { color: '', specification: '', size: '' }]);
+  };
+
+  const handleRemoveVariant = (index) => {
+    setVariants(variants.filter((_, i) => i !== index));
+  };
+
+  const handleVariantChange = (index, field, value) => {
+    const newVariants = [...variants];
+    newVariants[index][field] = value;
+    setVariants(newVariants);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="name">Name:</label>
-      <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} required />
-
-      <label htmlFor="brand">Brand:</label>
-      <input type="text" id="brand" value={brand} onChange={(e) => setBrand(e.target.value)} required />
-
-      <label htmlFor="type">Type:</label>
-      <input type="text" id="type" value={type} onChange={(e) => setType(e.target.value)} required />
-
-      <label htmlFor="origin">Origin:</label>
-      <input type="text" id="origin" value={origin} onChange={(e) => setOrigin(e.target.value)} required />
-
-      <h4>Variants</h4>
-      {variants.map((variant) => (
-        <div key={variant.id}>
-          <label htmlFor={`color-${variant.id}`}>Color:</label>
-          <input
-            type="text"
-            id={`color-${variant.id}`}
-            value={variant.color}
-            onChange={(e) => handleVariantChange(variant.id, 'color', e.target.value)}
-            required
-          />
-
-          <label htmlFor={`specification-${variant.id}`}>Specification:</label>
-          <input
-            type="text"
-            id={`specification-${variant.id}`}
-            value={variant.specification}
-            onChange={(e) => handleVariantChange(variant.id, 'specification', e.target.value)}
-            required
-          />
-
-          <label htmlFor={`size-${variant.id}`}>Size:</label>
-          <input
-            type="text"
-            id={`size-${variant.id}`}
-            value={variant.size}
-            onChange={(e) => handleVariantChange(variant.id, 'size', e.target.value)}
-            required
-          />
-
-          {variants.length > 1 && (
-            <button type="button" onClick={() => handleRemoveVariant(variant.id)}>Remove</button>
-          )}
-        </div>
-      ))}
-      <button type="button" onClick={handleAddVariant}>Add Variant</button>
-      <button type="submit">Submit</button>
-    </form>
+    <Paper style={{ padding: 16 }}>
+      <Typography variant="h6" gutterBottom>
+        <IconButton onClick={handleBack}>
+          <ArrowBackIcon />
+        </IconButton>
+        {id ? 'Edit Product' : 'Add Product'}
+      </Typography>
+      <form onSubmit={handleSubmit}>
+        <Grid container spacing={3}>
+          <Grid item xs={6}>
+            <TextField
+              label="Name"
+              fullWidth
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Brand"
+              fullWidth
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
+              required
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Type"
+              fullWidth
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              required
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Origin"
+              fullWidth
+              value={origin}
+              onChange={(e) => setOrigin(e.target.value)}
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6" gutterBottom>
+              Variants
+            </Typography>
+            {variants.map((variant, index) => (
+              <Grid container spacing={2} key={index}>
+                <Grid item xs={3}>
+                  <TextField
+                    label="Color"
+                    fullWidth
+                    value={variant.color}
+                    onChange={(e) => handleVariantChange(index, 'color', e.target.value)}
+                    required
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    label="Specification"
+                    fullWidth
+                    value={variant.specification}
+                    onChange={(e) => handleVariantChange(index, 'specification', e.target.value)}
+                    required
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    label="Size"
+                    fullWidth
+                    value={variant.size}
+                    onChange={(e) => handleVariantChange(index, 'size', e.target.value)}
+                    required
+                  />
+                </Grid>
+                <Grid item xs={3} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <IconButton onClick={handleAddVariant}>
+                    <AddIcon />
+                  </IconButton>
+                  <IconButton onClick={() => handleRemoveVariant(index)}>
+                    <RemoveIcon />
+                  </IconButton>
+                </Grid>
+              </Grid>
+            ))}
+          </Grid>
+          <Grid item xs={12}>
+            <Button variant="contained" color="primary" onClick={handleBack}>
+              Cancel
+            </Button>
+            <Button type="submit" variant="contained" color="primary" style={{ marginLeft: 16 }}>
+              Submit
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
+    </Paper>
   );
 };
 
 ProductForm.propTypes = {
-  product: PropTypes.shape({
-    name: PropTypes.string,
-    brand: PropTypes.string,
-    type: PropTypes.string,
-    origin: PropTypes.string,
-    variants: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      color: PropTypes.string,
-      specification: PropTypes.string,
-      size: PropTypes.string,
-    })),
-  }),
   onSubmit: PropTypes.func.isRequired,
-};
-
-ProductForm.defaultProps = {
-  product: null,
 };
 
 export default ProductForm;
