@@ -7,8 +7,12 @@ import {
 
 function InformationPage() {
   const location = useLocation();
-  const { selectedVariants } = location.state;
   const navigate = useNavigate();
+
+  // Check if location.state is null and provide a default value
+  const selectedVariants = location.state?.selectedVariants || [];
+  const selectedProducts = location.state?.selectedProducts || [];
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
@@ -60,6 +64,7 @@ function InformationPage() {
           <Grid item xs={12}>
             <Typography>
               Total Quantity:
+              {' '}
               {totalQuantity}
             </Typography>
           </Grid>
@@ -67,7 +72,7 @@ function InformationPage() {
             <Button type="submit" variant="contained" color="primary">
               Submit
             </Button>
-            <Button onClick={() => navigate('/orders/create/variants')}>
+            <Button onClick={() => navigate('/orders/create/variants', { state: { selectedProducts } })}>
               Back
             </Button>
           </Grid>
