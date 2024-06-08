@@ -10,16 +10,30 @@ import { fetchVariants } from '../slices/variantsSlice';
 
 function SelectVariantsPage() {
   const location = useLocation();
-  const { selectedProducts } = location.state;
-  const dispatch = useDispatch();
-  const { variants, loading, error } = useSelector((state) => state.variants);
-  const [selectedProduct, setSelectedProduct] = useState(selectedProducts[0]);
-  const [selectedVariants, setSelectedVariants] = useState([]);
   const navigate = useNavigate();
 
+  // Check if location.state is null and provide a default value
+  const selectedProducts = location.state?.selectedProducts || [];
+
+  const dispatch = useDispatch();
+  const { variants, loading, error } = useSelector((state) => state.variants);
+
+  const [selectedProduct, setSelectedProduct] = useState(selectedProducts[0] || '');
+  const [selectedVariants, setSelectedVariants] = useState([]);
+  const [variantQuantities, setVariantQuantities] = useState({});
+
   useEffect(() => {
-    dispatch(fetchVariants(selectedProduct));
+    if (selectedProduct) {
+      dispatch(fetchVariants(selectedProduct));
+    }
   }, [dispatch, selectedProduct]);
+
+  const handleQuantityChange = (variantId, quantity) => {
+    setVariantQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [variantId]: quantity,
+    }));
+  };
 
   const handleSelectVariant = (variantId) => {
     setSelectedVariants((prevSelected) => (prevSelected.includes(variantId)
@@ -28,7 +42,11 @@ function SelectVariantsPage() {
   };
 
   const handleNext = () => {
-    navigate('/orders/create/info', { state: { selectedVariants } });
+    const selectedVariantsWithQuantities = selectedVariants.map((id) => ({
+      id,
+      quantity: variantQuantities[id] || 0,
+    }));
+    navigate('/orders/create/info', { state: { selectedVariants: selectedVariantsWithQuantities, selectedProducts } });
   };
 
   return (
@@ -73,8 +91,8 @@ function SelectVariantsPage() {
               <TableCell>
                 <input
                   type="number"
-                  value={variant.quantity}
-                  onChange={(e) => handleSelectVariant(variant.id, parseInt(e.target.value, 10))}
+                  value={variantQuantities[variant.id] || 0}
+                  onChange={(e) => handleQuantityChange(variant.id, parseInt(e.target.value, 10))}
                 />
               </TableCell>
               <TableCell>
@@ -88,7 +106,7 @@ function SelectVariantsPage() {
           ))}
         </TableBody>
       </Table>
-      <Button onClick={() => navigate('/orders/create')}>Back</Button>
+      <Button onClick={() => navigate('/orders/create', { state: { selectedProducts } })}>Back</Button>
       <Button onClick={handleNext}>Next</Button>
     </div>
   );
