@@ -30,6 +30,10 @@ const ProductsPage = () => {
     dispatch(removeProduct(id));
   };
 
+  const handleEditProduct = (product) => {
+    navigate(`/products/edit/${product.id}`);
+  };
+
   return (
     <Routes>
       <Route
@@ -39,6 +43,7 @@ const ProductsPage = () => {
             products={products}
             loading={loading}
             error={error}
+            onEdit={handleEditProduct}
             onDelete={handleDeleteProduct}
           />
         )}
