@@ -1,53 +1,109 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Typography, Paper } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import ProductList from './ProductList';
+import {
+  Table, TableHead, TableBody, TableRow,
+  TableCell, Paper, TableContainer, Typography, IconButton, Tooltip, Pagination,
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { styled } from '@mui/system';
 
-const ProductListWithButton = ({
-  products, loading, error, onDelete,
-}) => {
-  const navigate = useNavigate();
+const Container = styled('div')({
+  padding: '20px',
+});
 
-  const handleCreateProduct = () => {
-    navigate('/products/new');
-  };
+const StyledTableContainer = styled(TableContainer)({
+  marginBottom: '20px',
+});
 
-  return (
-    <div>
-      <Typography variant="h4" gutterBottom>
-        Products
-      </Typography>
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <Button variant="contained" color="primary" onClick={handleCreateProduct}>
-        Create Product
-      </Button>
-      <Paper style={{ marginTop: '20px' }}>
-        <ProductList products={products} onDelete={onDelete} />
-      </Paper>
-    </div>
-  );
-};
+const StyledTable = styled(Table)({
+  minWidth: 650,
+});
 
-ProductListWithButton.propTypes = {
-  products: PropTypes.arrayOf(
-    PropTypes.shape({
+const StyledPagination = styled(Pagination)({
+  marginTop: 20,
+  display: 'flex',
+  justifyContent: 'center',
+});
+
+const ProductList = ({
+  products, onEdit, onDelete, totalPages, currentPage, onPageChange,
+}) => (
+  <Container>
+    <Typography variant="h4" gutterBottom>
+      Product List
+    </Typography>
+    <StyledTableContainer component={Paper}>
+      <StyledTable>
+        <TableHead>
+          <TableRow>
+            <TableCell>ID</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Brand</TableCell>
+            <TableCell>Type</TableCell>
+            <TableCell>Created At</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {products.map((product) => (
+            <TableRow key={product.id}>
+              <TableCell>{product.id}</TableCell>
+              <TableCell>{product.name}</TableCell>
+              <TableCell>{product.brand}</TableCell>
+              <TableCell>{product.type}</TableCell>
+              <TableCell>{product.createdAt}</TableCell>
+              <TableCell>
+                <Tooltip title="Edit">
+                  <IconButton
+                    color="primary"
+                    onClick={() => onEdit(product)}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete">
+                  <IconButton
+                    color="secondary"
+                    onClick={() => onDelete(product.id)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </StyledTable>
+    </StyledTableContainer>
+    <StyledPagination
+      count={totalPages}
+      page={currentPage}
+      onChange={(e, page) => onPageChange(page)}
+    />
+  </Container>
+);
+
+ProductList.propTypes = {
+  products: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    brand: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    createdAt: PropTypes.string.isRequired,
+    variants: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired,
-      brand: PropTypes.string.isRequired,
-      type: PropTypes.string.isRequired,
-      createdAt: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
-  loading: PropTypes.bool.isRequired,
-  error: PropTypes.string,
+      color: PropTypes.string.isRequired,
+      specification: PropTypes.string.isRequired,
+      size: PropTypes.string.isRequired,
+    })).isRequired,
+  })).isRequired,
+  onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
+  totalPages: PropTypes.number.isRequired,
+  currentPage: PropTypes.number.isRequired,
+  onPageChange: PropTypes.func.isRequired,
 };
 
-ProductListWithButton.defaultProps = {
-  error: null,
-};
-
-export default ProductListWithButton;
+export default ProductList;
