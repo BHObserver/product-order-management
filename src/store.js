@@ -1,13 +1,13 @@
-/* eslint-disable import/no-extraneous-dependencies */
-// src/store.js
 import { configureStore } from '@reduxjs/toolkit';
-import ordersReducer from './slices/ordersSlice';
 import productsReducer from './slices/productsSlice';
+import ordersReducer from './slices/ordersSlice';
+import variantsReducer from './slices/variantsSlice';
 
 const store = configureStore({
   reducer: {
-    orders: ordersReducer,
     products: productsReducer,
+    orders: ordersReducer,
+    variants: variantsReducer,
   },
 });
 
