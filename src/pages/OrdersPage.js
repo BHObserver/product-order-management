@@ -18,13 +18,19 @@ function OrdersPage() {
     dispatch(removeOrder(id));
   };
 
+  const handleEditOrder = (id) => {
+    // Implement the edit order functionality here
+    // For example, navigate to an edit order page
+    navigate(`/orders/edit/${id}`);
+  };
+
   return (
     <div>
       <h1>Orders</h1>
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <button type="button" onClick={() => navigate('/orders/create')}>Create Order</button>
-      <OrderList orders={orders} onDelete={handleDeleteOrder} />
+      <OrderList orders={orders} onEdit={handleEditOrder} onDelete={handleDeleteOrder} />
     </div>
   );
 }
