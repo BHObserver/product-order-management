@@ -3,9 +3,57 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  Table, TableHead, TableBody, TableRow, TableCell, Button,
+  Table, TableHead, TableBody, TableRow, TableCell,
+  Button, Typography, Box, CircularProgress, Paper, TableContainer,
 } from '@mui/material';
+import { styled } from '@mui/system';
 import { fetchProducts } from '../slices/productsSlice';
+
+const Container = styled('div')({
+  padding: '20px',
+});
+
+const StyledTableContainer = styled(TableContainer)({
+  marginBottom: '20px',
+});
+
+const StyledTable = styled(Table)({
+  minWidth: 650,
+});
+
+const StyledTableCell = styled(TableCell)({
+  border: '1px solid #e0e0e0',
+  padding: '16px',
+});
+
+const StyledTableRow = styled(TableRow)(() => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: '#f0f4f8',
+  },
+  '&:nth-of-type(even)': {
+    backgroundColor: '#ffffff',
+  },
+}));
+
+const StyledTableHeadCell = styled(StyledTableCell)({
+  backgroundColor: '#4f5b62',
+  color: 'white',
+  fontWeight: 'bold',
+});
+
+const Heading = styled(Typography)({
+  color: '#37474f',
+  marginBottom: '20px',
+});
+
+const StyledButton = styled(Button)({
+  marginRight: '10px',
+  backgroundColor: '#4f5b62',
+  color: 'white',
+  '&:hover': {
+    backgroundColor: '#3b4a53',
+  },
+});
 
 function SelectProductsPage() {
   const dispatch = useDispatch();
@@ -44,41 +92,45 @@ function SelectProductsPage() {
   const productsArray = Object.values(items);
 
   return (
-    <div>
-      <h1>Select Products</h1>
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Brand</TableCell>
-            <TableCell>Type</TableCell>
-            <TableCell>Select</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {productsArray.map((product) => (
-            <TableRow key={product.id}>
-              <TableCell>{product.id}</TableCell>
-              <TableCell>{product.name}</TableCell>
-              <TableCell>{product.brand}</TableCell>
-              <TableCell>{product.type}</TableCell>
-              <TableCell>
-                <input
-                  type="checkbox"
-                  checked={selectedProducts.includes(product.id)}
-                  onChange={() => handleSelectProduct(product.id)}
-                />
-              </TableCell>
+    <Container>
+      <Heading variant="h4">Select Products</Heading>
+      {loading && <Box display="flex" justifyContent="center"><CircularProgress /></Box>}
+      {error && <Typography color="error">{error}</Typography>}
+      <StyledTableContainer component={Paper}>
+        <StyledTable>
+          <TableHead>
+            <TableRow>
+              <StyledTableHeadCell>ID</StyledTableHeadCell>
+              <StyledTableHeadCell>Name</StyledTableHeadCell>
+              <StyledTableHeadCell>Brand</StyledTableHeadCell>
+              <StyledTableHeadCell>Type</StyledTableHeadCell>
+              <StyledTableHeadCell>Select</StyledTableHeadCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <Button onClick={() => navigate('/orders')}>Back</Button>
-      <Button onClick={handleNext}>Next</Button>
-    </div>
+          </TableHead>
+          <TableBody>
+            {productsArray.map((product) => (
+              <StyledTableRow key={product.id}>
+                <StyledTableCell>{product.id}</StyledTableCell>
+                <StyledTableCell>{product.name}</StyledTableCell>
+                <StyledTableCell>{product.brand}</StyledTableCell>
+                <StyledTableCell>{product.type}</StyledTableCell>
+                <StyledTableCell>
+                  <input
+                    type="checkbox"
+                    checked={selectedProducts.includes(product.id)}
+                    onChange={() => handleSelectProduct(product.id)}
+                  />
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </StyledTable>
+      </StyledTableContainer>
+      <Box display="flex" justifyContent="flex-end">
+        <StyledButton onClick={() => navigate('/orders')}>Back</StyledButton>
+        <StyledButton onClick={handleNext}>Next</StyledButton>
+      </Box>
+    </Container>
   );
 }
 

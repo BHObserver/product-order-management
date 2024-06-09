@@ -20,7 +20,7 @@ const ProductsPage = () => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  const productsPerPage = 5;
+  const productsPerPage = 8;
   const totalPages = Math.ceil(Object.values(products).length / productsPerPage);
 
   const [currentPage, setCurrentPage] = useState(1);

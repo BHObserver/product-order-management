@@ -6,8 +6,9 @@ import {
   TableCell, Paper, TableContainer, Typography, IconButton,
   Tooltip, Pagination, Button, Box, CircularProgress,
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import InventoryRoundedIcon from '@mui/icons-material/InventoryRounded';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
@@ -22,10 +23,12 @@ const HeaderContainer = styled('div')({
   justifyContent: 'space-between',
   alignItems: 'center',
   marginBottom: '20px',
+  marginTop: '25px',
 });
 
 const StyledTableContainer = styled(TableContainer)({
   marginBottom: '20px',
+  minWidth: 650,
 });
 
 const StyledTable = styled(Table)({
@@ -36,6 +39,39 @@ const StyledPagination = styled(Pagination)({
   marginTop: 20,
   display: 'flex',
   justifyContent: 'center',
+});
+
+const StyledTableCell = styled(TableCell)({
+  textAlign: 'center',
+  border: '1px solid #e0e0e0',
+  padding: '10px',
+});
+
+const StyledTableHeadCell = styled(StyledTableCell)({
+  backgroundColor: '#4f5b62',
+  color: 'white',
+  fontWeight: 'bold',
+});
+
+const StyledTableRow = styled(TableRow)(() => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: '#f0f4f8',
+  },
+  '&:nth-of-type(even)': {
+    backgroundColor: '#ffffff',
+  },
+}));
+
+const ProductListHeading = styled(Typography)({
+  display: 'flex',
+  alignItems: 'center',
+  color: '#37474f',
+});
+
+const IconStyle = styled(InventoryRoundedIcon)({
+  marginRight: '10px',
+  fontSize: '32px',
+  color: '#37474f',
 });
 
 const ProductList = ({
@@ -58,14 +94,15 @@ const ProductList = ({
   return (
     <Container>
       <HeaderContainer>
-        <Typography variant="h4" gutterBottom>
-          Product List
-        </Typography>
+        <ProductListHeading variant="h5" gutterBottom>
+          <IconStyle />
+          PRODUCT LIST
+        </ProductListHeading>
         <Button
           variant="contained"
-          color="primary"
+          style={{ backgroundColor: '#4f5b62', color: 'white' }}
           startIcon={<AddIcon />}
-          onClick={() => navigate('/products/new/product')}
+          onClick={() => navigate('/products/new')}
         >
           Create
         </Button>
@@ -73,24 +110,24 @@ const ProductList = ({
       <StyledTableContainer component={Paper}>
         <StyledTable>
           <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Brand</TableCell>
-              <TableCell>Type</TableCell>
-              <TableCell>Created At</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
+            <StyledTableRow>
+              <StyledTableHeadCell>ID</StyledTableHeadCell>
+              <StyledTableHeadCell>Name</StyledTableHeadCell>
+              <StyledTableHeadCell>Brand</StyledTableHeadCell>
+              <StyledTableHeadCell>Type</StyledTableHeadCell>
+              <StyledTableHeadCell>Created At</StyledTableHeadCell>
+              <StyledTableHeadCell>Actions</StyledTableHeadCell>
+            </StyledTableRow>
           </TableHead>
           <TableBody>
             {products.map((product) => (
-              <TableRow key={product.id}>
-                <TableCell>{product.id}</TableCell>
-                <TableCell>{product.name}</TableCell>
-                <TableCell>{product.brand}</TableCell>
-                <TableCell>{product.type}</TableCell>
-                <TableCell>{product.createdAt}</TableCell>
-                <TableCell>
+              <StyledTableRow key={product.id}>
+                <StyledTableCell>{product.id}</StyledTableCell>
+                <StyledTableCell>{product.name}</StyledTableCell>
+                <StyledTableCell>{product.brand}</StyledTableCell>
+                <StyledTableCell>{product.type}</StyledTableCell>
+                <StyledTableCell>{product.createdAt}</StyledTableCell>
+                <StyledTableCell>
                   <Tooltip title="View">
                     <IconButton
                       color="primary"
@@ -115,8 +152,8 @@ const ProductList = ({
                       <DeleteIcon />
                     </IconButton>
                   </Tooltip>
-                </TableCell>
-              </TableRow>
+                </StyledTableCell>
+              </StyledTableRow>
             ))}
           </TableBody>
         </StyledTable>

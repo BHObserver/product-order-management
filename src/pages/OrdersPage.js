@@ -7,6 +7,7 @@ import {
   TableRow, Typography, Container, IconButton,
   Tooltip, Box, CircularProgress, Paper, TableContainer,
 } from '@mui/material';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -19,7 +20,7 @@ const HeaderContainer = styled('div')({
   justifyContent: 'space-between',
   alignItems: 'center',
   marginBottom: '20px',
-  marginTop: '20px',
+  marginTop: '25px',
 });
 
 const StyledTableContainer = styled(TableContainer)({
@@ -28,6 +29,38 @@ const StyledTableContainer = styled(TableContainer)({
 
 const StyledTable = styled(Table)({
   minWidth: 650,
+});
+
+const StyledTableCell = styled(TableCell)({
+  border: '1px solid #e0e0e0',
+  padding: '10px',
+});
+
+const StyledTableRow = styled(TableRow)(() => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: '#f0f4f8',
+  },
+  '&:nth-of-type(even)': {
+    backgroundColor: '#ffffff',
+  },
+}));
+
+const StyledTableHeadCell = styled(StyledTableCell)({
+  backgroundColor: '#4f5b62',
+  color: 'white',
+  fontWeight: 'bold',
+});
+
+const ProductListHeading = styled(Typography)({
+  display: 'flex',
+  alignItems: 'center',
+  color: '#37474f',
+});
+
+const IconStyle = styled(ShoppingCartIcon)({
+  marginRight: '10px',
+  fontSize: '32px',
+  color: '#37474f',
 });
 
 function OrdersPage() {
@@ -54,10 +87,13 @@ function OrdersPage() {
   return (
     <Container>
       <HeaderContainer>
-        <Typography variant="h4">Orders</Typography>
+        <ProductListHeading variant="h5" gutterBottom>
+          <IconStyle />
+          ORDER LIST
+        </ProductListHeading>
         <Button
           variant="contained"
-          color="primary"
+          style={{ backgroundColor: '#4f5b62', color: 'white' }}
           startIcon={<AddIcon />}
           onClick={handleAddOrder}
         >
@@ -70,23 +106,25 @@ function OrdersPage() {
         <StyledTable>
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Address</TableCell>
-              <TableCell>Total Quantity</TableCell>
-              <TableCell>Actions</TableCell>
+              <StyledTableHeadCell>ID</StyledTableHeadCell>
+              <StyledTableHeadCell>Name</StyledTableHeadCell>
+              <StyledTableHeadCell>Email</StyledTableHeadCell>
+              <StyledTableHeadCell>Address</StyledTableHeadCell>
+              <StyledTableHeadCell>Total Quantity</StyledTableHeadCell>
+              <StyledTableHeadCell>Created At</StyledTableHeadCell>
+              <StyledTableHeadCell>Actions</StyledTableHeadCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {orders.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell>{order.id}</TableCell>
-                <TableCell>{order.name}</TableCell>
-                <TableCell>{order.email}</TableCell>
-                <TableCell>{order.address}</TableCell>
-                <TableCell>{order.total_quantity}</TableCell>
-                <TableCell>
+              <StyledTableRow key={order.id}>
+                <StyledTableCell>{order.id}</StyledTableCell>
+                <StyledTableCell>{order.name}</StyledTableCell>
+                <StyledTableCell>{order.email}</StyledTableCell>
+                <StyledTableCell>{order.address}</StyledTableCell>
+                <StyledTableCell>{order.total_quantity}</StyledTableCell>
+                <StyledTableCell>{order.createdAt}</StyledTableCell>
+                <StyledTableCell>
                   <Tooltip title="View Details">
                     <IconButton color="primary" onClick={() => handleViewDetails(order)}>
                       <VisibilityIcon />
@@ -102,8 +140,8 @@ function OrdersPage() {
                       <DeleteIcon />
                     </IconButton>
                   </Tooltip>
-                </TableCell>
-              </TableRow>
+                </StyledTableCell>
+              </StyledTableRow>
             ))}
           </TableBody>
         </StyledTable>

@@ -4,9 +4,63 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Table, TableHead, TableBody, TableRow,
-  TableCell, Button, MenuItem, Select, InputLabel, FormControl,
+  TableCell, Button, MenuItem, Select, InputLabel,
+  FormControl, Typography, Box, CircularProgress, Paper, TableContainer, TextField,
 } from '@mui/material';
+import { styled } from '@mui/system';
 import { fetchVariants } from '../slices/variantsSlice';
+
+const Container = styled('div')({
+  padding: '20px',
+});
+
+const StyledTableContainer = styled(TableContainer)({
+  marginBottom: '20px',
+});
+
+const StyledTable = styled(Table)({
+  minWidth: 650,
+});
+
+const StyledTableCell = styled(TableCell)({
+  border: '1px solid #e0e0e0',
+  padding: '16px',
+});
+
+const StyledTableRow = styled(TableRow)(() => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: '#f0f4f8',
+  },
+  '&:nth-of-type(even)': {
+    backgroundColor: '#ffffff',
+  },
+}));
+
+const StyledTableHeadCell = styled(StyledTableCell)({
+  backgroundColor: '#4f5b62',
+  color: 'white',
+  fontWeight: 'bold',
+});
+
+const Heading = styled(Typography)({
+  color: '#37474f',
+  marginBottom: '20px',
+});
+
+const StyledButton = styled(Button)({
+  marginRight: '10px',
+  backgroundColor: '#4f5b62',
+  color: 'white',
+  '&:hover': {
+    backgroundColor: '#3b4a53',
+  },
+});
+
+const FormControlContainer = styled(FormControl)({
+  marginBottom: '20px',
+  minWidth: 200,
+  padding: '6px',
+});
 
 function SelectVariantsPage() {
   const location = useLocation();
@@ -41,6 +95,7 @@ function SelectVariantsPage() {
   }, [isEdit, location.state]);
 
   const handleQuantityChange = (variantId, quantity) => {
+    if (quantity < 0) return; // Prevent negative quantities
     setVariantQuantities((prevQuantities) => ({
       ...prevQuantities,
       [variantId]: quantity,
@@ -71,16 +126,17 @@ function SelectVariantsPage() {
   };
 
   return (
-    <div>
-      <h1>Select Variants</h1>
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <FormControl fullWidth>
-        <InputLabel id="select-product-label">Product</InputLabel>
+    <Container>
+      <Heading variant="h4">Select Variants</Heading>
+      {loading && <Box display="flex" justifyContent="center"><CircularProgress /></Box>}
+      {error && <Typography color="error">{error}</Typography>}
+      <FormControlContainer>
+        <InputLabel id="select-product-label"> </InputLabel>
         <Select
           labelId="select-product-label"
           value={selectedProduct}
           onChange={(e) => setSelectedProduct(e.target.value)}
+          fullWidth
         >
           {selectedProducts.map((productId) => (
             <MenuItem key={productId} value={productId}>
@@ -90,46 +146,52 @@ function SelectVariantsPage() {
             </MenuItem>
           ))}
         </Select>
-      </FormControl>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Color</TableCell>
-            <TableCell>Specification</TableCell>
-            <TableCell>Size</TableCell>
-            <TableCell>Quantity</TableCell>
-            <TableCell>Select</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {variants.map((variant) => (
-            <TableRow key={variant.id}>
-              <TableCell>{variant.id}</TableCell>
-              <TableCell>{variant.color}</TableCell>
-              <TableCell>{variant.specification}</TableCell>
-              <TableCell>{variant.size}</TableCell>
-              <TableCell>
-                <input
-                  type="number"
-                  value={variantQuantities[variant.id] || ''}
-                  onChange={(e) => handleQuantityChange(variant.id, e.target.value)}
-                />
-              </TableCell>
-              <TableCell>
-                <input
-                  type="checkbox"
-                  checked={selectedVariants.includes(variant.id)}
-                  onChange={() => handleSelectVariant(variant.id)}
-                />
-              </TableCell>
+      </FormControlContainer>
+      <StyledTableContainer component={Paper}>
+        <StyledTable>
+          <TableHead>
+            <TableRow>
+              <StyledTableHeadCell>ID</StyledTableHeadCell>
+              <StyledTableHeadCell>Color</StyledTableHeadCell>
+              <StyledTableHeadCell>Specification</StyledTableHeadCell>
+              <StyledTableHeadCell>Size</StyledTableHeadCell>
+              <StyledTableHeadCell>Quantity</StyledTableHeadCell>
+              <StyledTableHeadCell>Select</StyledTableHeadCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <Button onClick={() => navigate('/orders')}>Back</Button>
-      <Button onClick={handleNext}>Next</Button>
-    </div>
+          </TableHead>
+          <TableBody>
+            {variants.map((variant) => (
+              <StyledTableRow key={variant.id}>
+                <StyledTableCell>{variant.id}</StyledTableCell>
+                <StyledTableCell>{variant.color}</StyledTableCell>
+                <StyledTableCell>{variant.specification}</StyledTableCell>
+                <StyledTableCell>{variant.size}</StyledTableCell>
+                <StyledTableCell>
+                  <TextField
+                    type="number"
+                    value={variantQuantities[variant.id] || ''}
+                    onChange={(e) => handleQuantityChange(variant.id, e.target.value)}
+                    inputProps={{ min: 0, step: 1 }}
+                    fullWidth
+                  />
+                </StyledTableCell>
+                <StyledTableCell>
+                  <input
+                    type="checkbox"
+                    checked={selectedVariants.includes(variant.id)}
+                    onChange={() => handleSelectVariant(variant.id)}
+                  />
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </StyledTable>
+      </StyledTableContainer>
+      <Box display="flex" justifyContent="flex-end">
+        <StyledButton onClick={() => navigate('/orders')}>Back</StyledButton>
+        <StyledButton onClick={handleNext}>Next</StyledButton>
+      </Box>
+    </Container>
   );
 }
 
