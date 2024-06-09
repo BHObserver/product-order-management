@@ -9,6 +9,7 @@ import Navbar from './components/Navbar';
 import SelectProductsPage from './pages/SelectProductsPage';
 import SelectVariantsPage from './pages/SelectVariantsPage';
 import InformationPage from './pages/InformationPage';
+import EditOrderPage from './pages/EditOrderPage'; // Import the new EditOrderPage component
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/orders/create" element={<SelectProductsPage />} />
           <Route path="/orders/create/variants" element={<SelectVariantsPage />} />
           <Route path="/orders/create/info" element={<InformationPage />} />
+          <Route path="/orders/edit/:id" element={<EditOrderPage />} />
         </Routes>
       </Router>
     </Provider>
