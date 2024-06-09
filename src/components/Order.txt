@@ -1,0 +1,426 @@
+//Components
+
+//OrderList.js
+
+/* eslint-disable import/no-extraneous-dependencies */
+import React from 'react';
+import PropTypes from 'prop-types';
+import {
+  Table, TableHead, TableBody, TableRow, TableCell, Paper, TableContainer, Typography, IconButton,
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+const OrderList = ({ orders, onEdit, onDelete }) => {
+  if (orders.length === 0) {
+    return <Typography>No orders found.</Typography>;
+  }
+
+  return (
+    <TableContainer component={Paper}>
+      <Typography variant="h4" gutterBottom>
+        Orders
+      </Typography>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>ID</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Total Quantity</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {orders.map((order) => (
+            <TableRow key={order.id}>
+              <TableCell>{order.id}</TableCell>
+              <TableCell>{order.name}</TableCell>
+              <TableCell>{order.email}</TableCell>
+              <TableCell>{order.total_quantity}</TableCell>
+              <TableCell>
+                <IconButton onClick={() => onEdit(order.id)}>
+                  <EditIcon />
+                </IconButton>
+                <IconButton onClick={() => onDelete(order.id)}>
+                  <DeleteIcon />
+                </IconButton>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+};
+
+OrderList.propTypes = {
+  orders: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+      total_quantity: PropTypes.number.isRequired,
+    }),
+  ).isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+};
+
+export default OrderList;
+
+
+//Pages
+
+/* eslint-disable import/no-extraneous-dependencies */
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { fetchOrders, removeOrder } from '../slices/ordersSlice';
+import OrderList from '../components/OrderList';
+
+function OrdersPage() {
+  const dispatch = useDispatch();
+  const { orders, loading, error } = useSelector((state) => state.orders);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(fetchOrders());
+  }, [dispatch]);
+
+  const handleDeleteOrder = (id) => {
+    dispatch(removeOrder(id));
+  };
+
+  const handleEditOrder = (id) => {
+    // Implement the edit order functionality here
+    // For example, navigate to an edit order page
+    navigate(`/orders/edit/${id}`);
+  };
+
+  return (
+    <div>
+      <h1>Orders</h1>
+      {loading && <p>Loading...</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <button type="button" onClick={() => navigate('/orders/create')}>Create Order</button>
+      <OrderList orders={orders} onEdit={handleEditOrder} onDelete={handleDeleteOrder} />
+    </div>
+  );
+}
+
+export default OrdersPage;
+
+/* eslint-disable import/no-extraneous-dependencies */
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  Table, TableHead, TableBody, TableRow, TableCell, Button,
+} from '@mui/material';
+import { fetchProducts } from '../slices/productsSlice';
+
+function SelectProductsPage() {
+  const dispatch = useDispatch();
+  const { products, loading, error } = useSelector((state) => state.products);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  const handleSelectProduct = (productId) => {
+    setSelectedProducts((prevSelected) => (prevSelected.includes(productId)
+      ? prevSelected.filter((id) => id !== productId)
+      : [...prevSelected, productId]));
+  };
+
+  const handleNext = () => {
+    navigate('/orders/create/variants', { state: { selectedProducts } });
+  };
+
+  return (
+    <div>
+      <h1>Select Products</h1>
+      {loading && <p>Loading...</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>ID</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Brand</TableCell>
+            <TableCell>Type</TableCell>
+            <TableCell>Select</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {products.map((product) => (
+            <TableRow key={product.id}>
+              <TableCell>{product.id}</TableCell>
+              <TableCell>{product.name}</TableCell>
+              <TableCell>{product.brand}</TableCell>
+              <TableCell>{product.type}</TableCell>
+              <TableCell>
+                <input
+                  type="checkbox"
+                  checked={selectedProducts.includes(product.id)}
+                  onChange={() => handleSelectProduct(product.id)}
+                />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <Button onClick={() => navigate('/orders')}>Back</Button>
+      <Button onClick={handleNext}>Next</Button>
+    </div>
+  );
+}
+
+export default SelectProductsPage;
+
+
+/* eslint-disable import/no-extraneous-dependencies */
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  Table, TableHead, TableBody, TableRow,
+  TableCell, Button, MenuItem, Select, InputLabel, FormControl,
+} from '@mui/material';
+import { fetchVariants } from '../slices/variantsSlice';
+
+function SelectVariantsPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Check if location.state is null and provide a default value
+  const selectedProducts = location.state?.selectedProducts || [];
+
+  const dispatch = useDispatch();
+  const { variants, loading, error } = useSelector((state) => state.variants);
+
+  const [selectedProduct, setSelectedProduct] = useState(selectedProducts[0] || '');
+  const [selectedVariants, setSelectedVariants] = useState([]);
+  const [variantQuantities, setVariantQuantities] = useState({});
+
+  useEffect(() => {
+    if (selectedProduct) {
+      dispatch(fetchVariants(selectedProduct));
+    }
+  }, [dispatch, selectedProduct]);
+
+  const handleQuantityChange = (variantId, quantity) => {
+    setVariantQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [variantId]: quantity,
+    }));
+  };
+
+  const handleSelectVariant = (variantId) => {
+    setSelectedVariants((prevSelected) => (prevSelected.includes(variantId)
+      ? prevSelected.filter((id) => id !== variantId)
+      : [...prevSelected, variantId]));
+  };
+
+  const handleNext = () => {
+    const selectedVariantsWithQuantities = selectedVariants.map((id) => ({
+      id,
+      quantity: variantQuantities[id] || 0,
+    }));
+    navigate('/orders/create/info', { state: { selectedVariants: selectedVariantsWithQuantities, selectedProducts } });
+  };
+
+  return (
+    <div>
+      <h1>Select Variants</h1>
+      {loading && <p>Loading...</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <FormControl fullWidth>
+        <InputLabel id="select-product-label">Product</InputLabel>
+        <Select
+          labelId="select-product-label"
+          value={selectedProduct}
+          onChange={(e) => setSelectedProduct(e.target.value)}
+        >
+          {selectedProducts.map((productId) => (
+            <MenuItem key={productId} value={productId}>
+              Product
+              {' '}
+              {productId}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>ID</TableCell>
+            <TableCell>Color</TableCell>
+            <TableCell>Specification</TableCell>
+            <TableCell>Size</TableCell>
+            <TableCell>Quantity</TableCell>
+            <TableCell>Select</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {variants.map((variant) => (
+            <TableRow key={variant.id}>
+              <TableCell>{variant.id}</TableCell>
+              <TableCell>{variant.color}</TableCell>
+              <TableCell>{variant.specification}</TableCell>
+              <TableCell>{variant.size}</TableCell>
+              <TableCell>
+                <input
+                  type="number"
+                  value={variantQuantities[variant.id] || 0}
+                  onChange={(e) => handleQuantityChange(variant.id, parseInt(e.target.value, 10))}
+                />
+              </TableCell>
+              <TableCell>
+                <input
+                  type="checkbox"
+                  checked={selectedVariants.includes(variant.id)}
+                  onChange={() => handleSelectVariant(variant.id)}
+                />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <Button onClick={() => navigate('/orders/create', { state: { selectedProducts } })}>Back</Button>
+      <Button onClick={handleNext}>Next</Button>
+    </div>
+  );
+}
+
+export default SelectVariantsPage;
+
+
+/* eslint-disable import/no-extraneous-dependencies */
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import {
+  TextField, Button, Paper, Typography, Grid,
+} from '@mui/material';
+import { addOrder } from '../slices/ordersSlice';
+
+function InformationPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const selectedVariants = location.state?.selectedVariants || [];
+  const selectedProducts = location.state?.selectedProducts || [];
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
+  const [totalQuantity] = useState(
+    selectedVariants.reduce((acc, variant) => acc + (variant.quantity || 0), 0),
+  );
+  const [details] = useState(
+    selectedVariants.map((variant) => ({
+      variant_id: variant.id,
+      quantity: variant.quantity || 0,
+    })),
+  );
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validate details
+    const isValid = details.every((detail) => detail.variant_id && detail.quantity);
+    if (!isValid) {
+      alert('Please ensure all variant IDs and quantities are filled out.');
+      return;
+    }
+
+    const order = {
+      name,
+      email,
+      address,
+      total_quantity: totalQuantity,
+      details,
+    };
+
+    try {
+      await dispatch(addOrder(order));
+      navigate('/orders');
+    } catch (error) {
+      console.error('Error creating order:', error);
+      alert('Failed to create order. Please try again.');
+    }
+  };
+
+  return (
+    <Paper style={{ padding: 16 }}>
+      <Typography variant="h6" gutterBottom>
+        Order Create
+      </Typography>
+      <Typography variant="subtitle1" gutterBottom>
+        3 - Information
+      </Typography>
+      <form onSubmit={handleSubmit}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Name"
+              fullWidth
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Email"
+              fullWidth
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Address"
+              fullWidth
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Total Quantity"
+              fullWidth
+              value={totalQuantity}
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography style={{ textAlign: 'right' }}>
+              Sum of selected variants quantity
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Button type="submit" variant="contained" color="primary" style={{ marginRight: 8 }}>
+              Submit
+            </Button>
+            <Button onClick={() => navigate('/orders/create/variants', { state: { selectedProducts } })} variant="outlined">
+              Back
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
+    </Paper>
+  );
+}
+
+export default InformationPage;
