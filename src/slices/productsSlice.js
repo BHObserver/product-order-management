@@ -32,7 +32,7 @@ export const removeProduct = createAsyncThunk('products/removeProduct', async (i
 const productsSlice = createSlice({
   name: 'products',
   initialState: {
-    items: {}, // Use an object to store products by id
+    items: {},
     loading: false,
     error: null,
   },
