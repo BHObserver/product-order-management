@@ -1,25 +1,34 @@
-/* eslint-disable import/no-extraneous-dependencies */
 // src/slices/ordersSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {
-  getOrders, createOrder, updateOrder, deleteOrder,
+  getOrders, createOrder, updateOrder, deleteOrder, getOrder,
 } from '../services/api';
 
+// Fetch all orders
 export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
   const response = await getOrders();
   return response.data.data;
 });
 
+// Fetch a single order by ID
+export const fetchOrder = createAsyncThunk('orders/fetchOrder', async (id) => {
+  const response = await getOrder(id);
+  return response.data;
+});
+
+// Add a new order
 export const addOrder = createAsyncThunk('orders/addOrder', async (order) => {
   const response = await createOrder(order);
-  return response;
+  return response.data;
 });
 
+// Update an existing order
 export const modifyOrder = createAsyncThunk('orders/modifyOrder', async ({ id, order }) => {
   const response = await updateOrder(id, order);
-  return response;
+  return response.data;
 });
 
+// Remove an order
 export const removeOrder = createAsyncThunk('orders/removeOrder', async (id) => {
   await deleteOrder(id);
   return id;
@@ -29,6 +38,7 @@ const ordersSlice = createSlice({
   name: 'orders',
   initialState: {
     orders: [],
+    order: null,
     loading: false,
     error: null,
   },
@@ -44,6 +54,18 @@ const ordersSlice = createSlice({
         state.orders = action.payload;
       })
       .addCase(fetchOrders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(fetchOrder.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchOrder.fulfilled, (state, action) => {
+        state.loading = false;
+        state.order = action.payload;
+      })
+      .addCase(fetchOrder.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
