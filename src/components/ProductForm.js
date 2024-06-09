@@ -1,17 +1,55 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
-  TextField, Button, Grid, Paper, Typography, IconButton,
+  TextField,
+  Button,
+  Grid,
+  Paper,
+  Typography,
+  IconButton,
+  Box,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { styled } from '@mui/system';
 import { fetchProduct } from '../slices/productsSlice';
+
+const StyledPaper = styled(Paper)({
+  padding: '20px',
+});
+
+const StyledTypography = styled(Typography)({
+  marginBottom: '28px',
+  textAlign: 'center',
+  fontSize: '28px',
+});
+
+const StyledGridItem = styled(Grid)({
+  marginBottom: '8px',
+});
+
+const StyledButton = styled(Button)({
+  marginRight: '10px',
+  backgroundColor: '#4f5b62',
+  color: 'white',
+  '&:hover': {
+    backgroundColor: '#3b4a53',
+  },
+});
+
+const BackButton = styled(Button)({
+  color: '#3b4a53',
+  border: '1px solid #3b4a53',
+  '&:hover': {
+    backgroundColor: '#f1f1f1',
+    borderColor: '#3b4a53',
+  },
+});
 
 const ProductForm = ({ onSubmit }) => {
   const [name, setName] = useState('');
@@ -49,7 +87,7 @@ const ProductForm = ({ onSubmit }) => {
     onSubmit({
       id, name, brand, type, origin, variants,
     });
-    navigate('/products'); // Redirect to products list after submission
+    navigate('/products');
   };
 
   const handleBack = () => {
@@ -71,16 +109,16 @@ const ProductForm = ({ onSubmit }) => {
   };
 
   return (
-    <Paper style={{ padding: 16 }}>
-      <Typography variant="h6" gutterBottom>
-        <IconButton onClick={handleBack}>
-          <ArrowBackIcon />
-        </IconButton>
-        {id ? 'Edit Product' : 'Add Product'}
-      </Typography>
+    <StyledPaper>
+      <IconButton onClick={handleBack}>
+        <ArrowBackIcon />
+      </IconButton>
+      <StyledTypography variant="h5" gutterBottom>
+        {id ? 'EDIT PRODUCT' : 'ADD PRODUCT'}
+      </StyledTypography>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
-          <Grid item xs={6}>
+          <StyledGridItem item xs={12} sm={6}>
             <TextField
               label="Name"
               fullWidth
@@ -88,8 +126,8 @@ const ProductForm = ({ onSubmit }) => {
               onChange={(e) => setName(e.target.value)}
               required
             />
-          </Grid>
-          <Grid item xs={6}>
+          </StyledGridItem>
+          <StyledGridItem item xs={12} sm={6}>
             <TextField
               label="Brand"
               fullWidth
@@ -97,8 +135,8 @@ const ProductForm = ({ onSubmit }) => {
               onChange={(e) => setBrand(e.target.value)}
               required
             />
-          </Grid>
-          <Grid item xs={6}>
+          </StyledGridItem>
+          <StyledGridItem item xs={12} sm={6}>
             <TextField
               label="Type"
               fullWidth
@@ -106,8 +144,8 @@ const ProductForm = ({ onSubmit }) => {
               onChange={(e) => setType(e.target.value)}
               required
             />
-          </Grid>
-          <Grid item xs={6}>
+          </StyledGridItem>
+          <StyledGridItem item xs={12} sm={6}>
             <TextField
               label="Origin"
               fullWidth
@@ -115,14 +153,14 @@ const ProductForm = ({ onSubmit }) => {
               onChange={(e) => setOrigin(e.target.value)}
               required
             />
-          </Grid>
-          <Grid item xs={12}>
+          </StyledGridItem>
+          <StyledGridItem item xs={12}>
             <Typography variant="h6" gutterBottom>
-              Variants
+              VARIANTS:
             </Typography>
             {variants.map((variant, index) => (
               <Grid container spacing={2} key={index}>
-                <Grid item xs={3}>
+                <StyledGridItem item xs={12} sm={3}>
                   <TextField
                     label="Color"
                     fullWidth
@@ -130,8 +168,8 @@ const ProductForm = ({ onSubmit }) => {
                     onChange={(e) => handleVariantChange(index, 'color', e.target.value)}
                     required
                   />
-                </Grid>
-                <Grid item xs={3}>
+                </StyledGridItem>
+                <StyledGridItem item xs={12} sm={3}>
                   <TextField
                     label="Specification"
                     fullWidth
@@ -139,8 +177,8 @@ const ProductForm = ({ onSubmit }) => {
                     onChange={(e) => handleVariantChange(index, 'specification', e.target.value)}
                     required
                   />
-                </Grid>
-                <Grid item xs={3}>
+                </StyledGridItem>
+                <StyledGridItem item xs={12} sm={3}>
                   <TextField
                     label="Size"
                     fullWidth
@@ -148,29 +186,31 @@ const ProductForm = ({ onSubmit }) => {
                     onChange={(e) => handleVariantChange(index, 'size', e.target.value)}
                     required
                   />
-                </Grid>
-                <Grid item xs={3} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                </StyledGridItem>
+                <StyledGridItem item xs={12} sm={3} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <IconButton onClick={handleAddVariant}>
                     <AddIcon />
                   </IconButton>
                   <IconButton onClick={() => handleRemoveVariant(index)}>
                     <RemoveIcon />
                   </IconButton>
-                </Grid>
+                </StyledGridItem>
               </Grid>
             ))}
-          </Grid>
-          <Grid item xs={12}>
-            <Button variant="contained" color="primary" onClick={handleBack}>
-              Cancel
-            </Button>
-            <Button type="submit" variant="contained" color="primary" style={{ marginLeft: 16 }}>
-              Submit
-            </Button>
-          </Grid>
+          </StyledGridItem>
+          <StyledGridItem item xs={12}>
+            <Box display="flex" justifyContent="flex-end" gap="10px">
+              <BackButton onClick={handleBack}>
+                Cancel
+              </BackButton>
+              <StyledButton type="submit">
+                Submit
+              </StyledButton>
+            </Box>
+          </StyledGridItem>
         </Grid>
       </form>
-    </Paper>
+    </StyledPaper>
   );
 };
 
