@@ -135,3 +135,13 @@ export const getVariants = async (productId) => {
     throw error;
   }
 };
+
+export const getProductDetails = async (productId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/products/${productId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching product details for ID ${productId}:`, error);
+    throw error;
+  }
+};
