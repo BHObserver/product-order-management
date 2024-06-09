@@ -50,6 +50,14 @@ const ProductsPage = () => {
   return (
     <Routes>
       <Route
+        path="new/product"
+        element={<ProductForm onSubmit={handleCreateOrUpdateProduct} />}
+      />
+      <Route
+        path="edit/:id"
+        element={<ProductForm onSubmit={handleCreateOrUpdateProduct} />}
+      />
+      <Route
         path="/"
         element={(
           <ProductList
@@ -63,14 +71,6 @@ const ProductsPage = () => {
             onPageChange={setCurrentPage}
           />
         )}
-      />
-      <Route
-        path="new"
-        element={<ProductForm onSubmit={handleCreateOrUpdateProduct} />}
-      />
-      <Route
-        path="edit/:id"
-        element={<ProductForm onSubmit={handleCreateOrUpdateProduct} />}
       />
     </Routes>
   );
