@@ -11,12 +11,11 @@ import { fetchVariants } from '../slices/variantsSlice';
 function SelectVariantsPage() {
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Check if location.state is null and provide a default value
-  const selectedProducts = location.state?.selectedProducts || [];
-
   const dispatch = useDispatch();
   const { variants, loading, error } = useSelector((state) => state.variants);
+
+  const { selectedProducts } = location.state;
+  const isEdit = location.state && location.state.order;
 
   const [selectedProduct, setSelectedProduct] = useState(selectedProducts[0] || '');
   const [selectedVariants, setSelectedVariants] = useState([]);
@@ -28,6 +27,19 @@ function SelectVariantsPage() {
     }
   }, [dispatch, selectedProduct]);
 
+  useEffect(() => {
+    if (isEdit) {
+      const { order } = location.state;
+      const initialSelectedVariants = order.details.map((detail) => detail.variant_id);
+      const initialVariantQuantities = {};
+      order.details.forEach((detail) => {
+        initialVariantQuantities[detail.variant_id] = detail.quantity;
+      });
+      setSelectedVariants(initialSelectedVariants);
+      setVariantQuantities(initialVariantQuantities);
+    }
+  }, [isEdit, location.state]);
+
   const handleQuantityChange = (variantId, quantity) => {
     setVariantQuantities((prevQuantities) => ({
       ...prevQuantities,
@@ -36,9 +48,11 @@ function SelectVariantsPage() {
   };
 
   const handleSelectVariant = (variantId) => {
-    setSelectedVariants((prevSelected) => (prevSelected.includes(variantId)
-      ? prevSelected.filter((id) => id !== variantId)
-      : [...prevSelected, variantId]));
+    setSelectedVariants((prevSelected) => (
+      prevSelected.includes(variantId)
+        ? prevSelected.filter((id) => id !== variantId)
+        : [...prevSelected, variantId]
+    ));
   };
 
   const handleNext = () => {
@@ -46,7 +60,13 @@ function SelectVariantsPage() {
       id,
       quantity: variantQuantities[id] || 0,
     }));
-    navigate('/orders/create/info', { state: { selectedVariants: selectedVariantsWithQuantities, selectedProducts } });
+    navigate(isEdit ? `/orders/edit/${location.state.order.id}/info` : '/orders/create/info', {
+      state: {
+        selectedVariants: selectedVariantsWithQuantities,
+        selectedProducts,
+        order: location.state.order,
+      },
+    });
   };
 
   return (
@@ -91,8 +111,8 @@ function SelectVariantsPage() {
               <TableCell>
                 <input
                   type="number"
-                  value={variantQuantities[variant.id] || 0}
-                  onChange={(e) => handleQuantityChange(variant.id, parseInt(e.target.value, 10))}
+                  value={variantQuantities[variant.id] || ''}
+                  onChange={(e) => handleQuantityChange(variant.id, e.target.value)}
                 />
               </TableCell>
               <TableCell>
@@ -106,7 +126,7 @@ function SelectVariantsPage() {
           ))}
         </TableBody>
       </Table>
-      <Button onClick={() => navigate('/orders/create', { state: { selectedProducts } })}>Back</Button>
+      <Button onClick={() => navigate('/orders')}>Back</Button>
       <Button onClick={handleNext}>Next</Button>
     </div>
   );

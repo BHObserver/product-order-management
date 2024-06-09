@@ -24,6 +24,9 @@ function App() {
           <Route path="/orders/create/variants" element={<SelectVariantsPage />} />
           <Route path="/orders/create/info" element={<InformationPage />} />
           <Route path="/orders/edit/:id" element={<EditOrderPage />} />
+          <Route path="/orders/edit/:id/products" element={<SelectProductsPage />} />
+          <Route path="/orders/edit/:id/variants" element={<SelectVariantsPage />} />
+          <Route path="/orders/edit/:id/info" element={<InformationPage />} />
         </Routes>
       </Router>
     </Provider>

@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Table, TableHead, TableBody, TableRow, TableCell, Button,
@@ -9,22 +9,34 @@ import { fetchProducts } from '../slices/productsSlice';
 
 function SelectProductsPage() {
   const dispatch = useDispatch();
+  const location = useLocation();
   const { products, loading, error } = useSelector((state) => state.products);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const navigate = useNavigate();
+  const isEdit = location.state && location.state.order;
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (isEdit) {
+      setSelectedProducts(location.state.order.details.map((detail) => detail.product_id));
+    }
+  }, [isEdit, location.state]);
+
   const handleSelectProduct = (productId) => {
-    setSelectedProducts((prevSelected) => (prevSelected.includes(productId)
-      ? prevSelected.filter((id) => id !== productId)
-      : [...prevSelected, productId]));
+    setSelectedProducts((prevSelected) => (
+      prevSelected.includes(productId)
+        ? prevSelected.filter((id) => id !== productId)
+        : [...prevSelected, productId]
+    ));
   };
 
   const handleNext = () => {
-    navigate('/orders/create/variants', { state: { selectedProducts } });
+    navigate(isEdit ? `/orders/edit/${location.state.order.id}/variants` : '/orders/create/variants', {
+      state: { selectedProducts, order: location.state.order },
+    });
   };
 
   return (

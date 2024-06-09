@@ -1,27 +1,23 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import {
+  Button, Table, TableBody, TableCell, TableHead, TableRow,
+} from '@mui/material';
 import { fetchOrders, removeOrder } from '../slices/ordersSlice';
-import OrderList from '../components/OrderList';
 
 function OrdersPage() {
   const dispatch = useDispatch();
-  const { orders, loading, error } = useSelector((state) => state.orders);
   const navigate = useNavigate();
+  const { orders, loading, error } = useSelector((state) => state.orders);
 
-  useEffect(() => {
+  React.useEffect(() => {
     dispatch(fetchOrders());
   }, [dispatch]);
 
-  const handleDeleteOrder = (id) => {
-    dispatch(removeOrder(id));
-  };
-
-  const handleEditOrder = (id) => {
-    // Implement the edit order functionality here
-    // For example, navigate to an edit order page
-    navigate(`/orders/edit/${id}`);
+  const handleEdit = (order) => {
+    navigate(`/orders/edit/${order.id}`, { state: { order } });
   };
 
   return (
@@ -29,8 +25,33 @@ function OrdersPage() {
       <h1>Orders</h1>
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      <button type="button" onClick={() => navigate('/orders/create')}>Create Order</button>
-      <OrderList orders={orders} onEdit={handleEditOrder} onDelete={handleDeleteOrder} />
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>ID</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Address</TableCell>
+            <TableCell>Total Quantity</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {orders.map((order) => (
+            <TableRow key={order.id}>
+              <TableCell>{order.id}</TableCell>
+              <TableCell>{order.name}</TableCell>
+              <TableCell>{order.email}</TableCell>
+              <TableCell>{order.address}</TableCell>
+              <TableCell>{order.total_quantity}</TableCell>
+              <TableCell>
+                <Button onClick={() => handleEdit(order)}>Edit</Button>
+                <Button onClick={() => dispatch(removeOrder(order.id))}>Delete</Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }

@@ -11,7 +11,7 @@ function EditOrderPage() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.orders);
+  const { order, loading, error } = useSelector((state) => state.orders);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
@@ -19,15 +19,18 @@ function EditOrderPage() {
   const [details, setDetails] = useState([]);
 
   useEffect(() => {
-    dispatch(fetchOrder(id)).then((response) => {
-      const order = response.payload;
+    dispatch(fetchOrder(id));
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    if (order) {
       setName(order.name);
       setEmail(order.email);
       setAddress(order.address);
       setTotalQuantity(order.total_quantity);
       setDetails(order.details);
-    });
-  }, [dispatch, id]);
+    }
+  }, [order]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,13 +50,15 @@ function EditOrderPage() {
     }
   };
 
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p style={{ color: 'red' }}>{error}</p>;
+  if (!order) return <p>No order found.</p>;
+
   return (
     <Paper style={{ padding: 16 }}>
       <Typography variant="h6" gutterBottom>
         Edit Order
       </Typography>
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
