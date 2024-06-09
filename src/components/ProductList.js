@@ -91,6 +91,9 @@ const ProductList = ({
     return <Typography>No products found.</Typography>;
   }
 
+  // Sort products by id in descending order
+  const sortedProducts = products.slice().sort((a, b) => b.id - a.id);
+
   return (
     <Container>
       <HeaderContainer>
@@ -102,7 +105,7 @@ const ProductList = ({
           variant="contained"
           style={{ backgroundColor: '#4f5b62', color: 'white' }}
           startIcon={<AddIcon />}
-          onClick={() => navigate('/products/new')}
+          onClick={() => navigate('/products/new/product')}
         >
           Create
         </Button>
@@ -120,7 +123,7 @@ const ProductList = ({
             </StyledTableRow>
           </TableHead>
           <TableBody>
-            {products.map((product) => (
+            {sortedProducts.map((product) => (
               <StyledTableRow key={product.id}>
                 <StyledTableCell>{product.id}</StyledTableCell>
                 <StyledTableCell>{product.name}</StyledTableCell>
