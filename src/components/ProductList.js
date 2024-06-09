@@ -6,6 +6,7 @@ import {
   TableCell, Paper, TableContainer, Typography, IconButton,
   Tooltip, Pagination, Button, Box, CircularProgress,
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -63,7 +64,8 @@ const ProductList = ({
         <Button
           variant="contained"
           color="primary"
-          onClick={() => navigate('/products/new')}
+          startIcon={<AddIcon />}
+          onClick={() => navigate('/products/new/product')}
         >
           Create
         </Button>
