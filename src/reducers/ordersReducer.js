@@ -1,4 +1,3 @@
-// src/reducers/ordersReducer.js
 const initialState = {
   orders: [],
   loading: false,
