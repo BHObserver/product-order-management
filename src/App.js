@@ -12,7 +12,6 @@ import InformationPage from './pages/InformationPage';
 import EditOrderPage from './pages/EditOrderPage';
 import ProductDetailsPage from './pages/ProductDetailsPage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
-import ProductForm from './components/ProductForm';
 
 function App() {
   return (
@@ -22,7 +21,6 @@ function App() {
         <Routes>
           <Route path="*" element={<ProductsPage />} />
           <Route path="/products/*" element={<ProductsPage />} />
-          <Route path="/products/new/product" element={<ProductForm />} />
           <Route path="/products/:productId" element={<ProductDetailsPage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/orders/:orderId" element={<OrderDetailsPage />} />
