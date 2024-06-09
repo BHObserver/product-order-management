@@ -126,7 +126,7 @@ const ProductList = ({
                 <StyledTableCell>{product.name}</StyledTableCell>
                 <StyledTableCell>{product.brand}</StyledTableCell>
                 <StyledTableCell>{product.type}</StyledTableCell>
-                <StyledTableCell>{product.createdAt}</StyledTableCell>
+                <StyledTableCell>{`${(new Date(product.created_at)).toLocaleDateString()}`}</StyledTableCell>
                 <StyledTableCell>
                   <Tooltip title="View">
                     <IconButton

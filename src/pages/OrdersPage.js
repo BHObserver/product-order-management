@@ -123,7 +123,7 @@ function OrdersPage() {
                 <StyledTableCell>{order.email}</StyledTableCell>
                 <StyledTableCell>{order.address}</StyledTableCell>
                 <StyledTableCell>{order.total_quantity}</StyledTableCell>
-                <StyledTableCell>{order.createdAt}</StyledTableCell>
+                <StyledTableCell>{`${(new Date(order.created_at)).toLocaleDateString()}`}</StyledTableCell>
                 <StyledTableCell>
                   <Tooltip title="View Details">
                     <IconButton color="primary" onClick={() => handleViewDetails(order)}>
