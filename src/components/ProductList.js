@@ -3,8 +3,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   Table, TableHead, TableBody, TableRow,
-  TableCell, Paper, TableContainer, Typography, IconButton, Tooltip, Pagination, Button,
+  TableCell, Paper, TableContainer, Typography, IconButton,
+  Tooltip, Pagination, Button, Box, CircularProgress,
 } from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
@@ -36,12 +38,20 @@ const StyledPagination = styled(Pagination)({
 });
 
 const ProductList = ({
-  products, onEdit, onDelete, totalPages, currentPage, onPageChange,
+  products, onEdit, onDelete, totalPages, currentPage, onPageChange, loading,
 }) => {
   const navigate = useNavigate();
 
-  if (!Array.isArray(products)) {
-    return <p>No products found.</p>;
+  const handleView = (productId) => {
+    navigate(`/products/${productId}`);
+  };
+
+  if (loading) {
+    return <Box display="flex" justifyContent="center"><CircularProgress /></Box>;
+  }
+
+  if (!Array.isArray(products) || products.length === 0) {
+    return <Typography>No products found.</Typography>;
   }
 
   return (
@@ -79,6 +89,14 @@ const ProductList = ({
                 <TableCell>{product.type}</TableCell>
                 <TableCell>{product.createdAt}</TableCell>
                 <TableCell>
+                  <Tooltip title="View">
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleView(product.id)}
+                    >
+                      <VisibilityIcon />
+                    </IconButton>
+                  </Tooltip>
                   <Tooltip title="Edit">
                     <IconButton
                       color="primary"
@@ -129,6 +147,7 @@ ProductList.propTypes = {
   totalPages: PropTypes.number.isRequired,
   currentPage: PropTypes.number.isRequired,
   onPageChange: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 export default ProductList;

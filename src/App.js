@@ -9,7 +9,9 @@ import Navbar from './components/Navbar';
 import SelectProductsPage from './pages/SelectProductsPage';
 import SelectVariantsPage from './pages/SelectVariantsPage';
 import InformationPage from './pages/InformationPage';
-import EditOrderPage from './pages/EditOrderPage'; // Import the new EditOrderPage component
+import EditOrderPage from './pages/EditOrderPage';
+import ProductDetailsPage from './pages/ProductDetailsPage';
+import OrderDetailsPage from './pages/OrderDetailsPage';
 
 function App() {
   return (
@@ -19,7 +21,9 @@ function App() {
         <Routes>
           <Route path="*" element={<ProductsPage />} />
           <Route path="/products/*" element={<ProductsPage />} />
+          <Route path="/products/:productId" element={<ProductDetailsPage />} />
           <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/orders/:orderId" element={<OrderDetailsPage />} />
           <Route path="/orders/create" element={<SelectProductsPage />} />
           <Route path="/orders/create/variants" element={<SelectVariantsPage />} />
           <Route path="/orders/create/info" element={<InformationPage />} />

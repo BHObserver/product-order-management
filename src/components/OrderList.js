@@ -6,8 +6,11 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility'; // Import the VisibilityIcon
 
-const OrderList = ({ orders, onEdit, onDelete }) => {
+const OrderList = ({
+  orders, onView, onEdit, onDelete,
+}) => {
   if (orders.length === 0) {
     return <Typography>No orders found.</Typography>;
   }
@@ -35,9 +38,15 @@ const OrderList = ({ orders, onEdit, onDelete }) => {
               <TableCell>{order.email}</TableCell>
               <TableCell>{order.total_quantity}</TableCell>
               <TableCell>
+                {/* View Button */}
+                <IconButton onClick={() => onView(order.id)}>
+                  <VisibilityIcon />
+                </IconButton>
+                {/* Edit Button */}
                 <IconButton onClick={() => onEdit(order.id)}>
                   <EditIcon />
                 </IconButton>
+                {/* Delete Button */}
                 <IconButton onClick={() => onDelete(order.id)}>
                   <DeleteIcon />
                 </IconButton>
@@ -59,6 +68,7 @@ OrderList.propTypes = {
       total_quantity: PropTypes.number.isRequired,
     }),
   ).isRequired,
+  onView: PropTypes.func.isRequired, // Add PropTypes for onView function
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 };

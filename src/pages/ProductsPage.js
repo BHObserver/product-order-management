@@ -1,9 +1,12 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Route, Routes } from 'react-router-dom';
 import {
-  fetchProducts, addProduct, modifyProduct, removeProduct,
+  fetchProducts,
+  addProduct,
+  modifyProduct,
+  removeProduct,
 } from '../slices/productsSlice';
 import ProductList from '../components/ProductList';
 import ProductForm from '../components/ProductForm';
@@ -17,13 +20,18 @@ const ProductsPage = () => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
+  const productsPerPage = 5;
+  const totalPages = Math.ceil(Object.values(products).length / productsPerPage);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
   const handleCreateOrUpdateProduct = (product) => {
     if (product.id) {
       dispatch(modifyProduct({ id: product.id, product }));
     } else {
       dispatch(addProduct(product));
     }
-    navigate('/products'); // Redirect to products list after submission
+    navigate('/products');
   };
 
   const handleDeleteProduct = (id) => {
@@ -34,8 +42,10 @@ const ProductsPage = () => {
     navigate(`/products/edit/${product.id}`);
   };
 
-  // Convert products object to an array
-  const productArray = Object.values(products);
+  const productArray = Object.values(products).slice(
+    (currentPage - 1) * productsPerPage,
+    currentPage * productsPerPage,
+  );
 
   return (
     <Routes>
@@ -48,9 +58,9 @@ const ProductsPage = () => {
             error={error}
             onEdit={handleEditProduct}
             onDelete={handleDeleteProduct}
-            totalPages={1} // Example value, you might want to fetch this dynamically
-            currentPage={1} // Example value, you might want to fetch this dynamically
-            onPageChange={(page) => console.log('Page change', page)}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
           />
         )}
       />
