@@ -73,7 +73,8 @@ const ordersSlice = createSlice({
         state.orders.push(action.payload);
       })
       .addCase(modifyOrder.fulfilled, (state, action) => {
-        const index = state.orders.findIndex((order) => order.id === action.payload.id);
+        const { id } = action.meta.arg; // Accessing id from action payload
+        const index = state.orders.findIndex((order) => order.id === id);
         if (index !== -1) {
           state.orders[index] = action.payload;
         }
