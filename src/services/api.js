@@ -13,6 +13,16 @@ export const getOrders = async () => {
   }
 };
 
+export const getOrder = async (id) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/orders/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching order with ID ${id}:`, error);
+    throw error;
+  }
+};
+
 export const createOrder = async (order) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/orders`, order, {
@@ -23,16 +33,6 @@ export const createOrder = async (order) => {
     return response.data;
   } catch (error) {
     console.error('Error creating order:', error);
-    throw error;
-  }
-};
-
-export const getVariants = async (productId) => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/products/${productId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching variants:', error);
     throw error;
   }
 };
@@ -112,6 +112,16 @@ export const deleteProduct = async (id) => {
     return response.data;
   } catch (error) {
     console.error('Error deleting product:', error);
+    throw error;
+  }
+};
+
+export const getVariants = async (productId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/products/${productId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching variants:', error);
     throw error;
   }
 };
