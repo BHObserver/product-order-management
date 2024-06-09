@@ -1,0 +1,476 @@
+//Components
+/* eslint-disable import/no-extraneous-dependencies */
+import React from 'react';
+import PropTypes from 'prop-types';
+import {
+  Table, TableHead, TableBody, TableRow,
+  TableCell, Paper, TableContainer, Typography, IconButton, Tooltip, Pagination,
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { styled } from '@mui/system';
+
+const Container = styled('div')({
+  padding: '20px',
+});
+
+const StyledTableContainer = styled(TableContainer)({
+  marginBottom: '20px',
+});
+
+const StyledTable = styled(Table)({
+  minWidth: 650,
+});
+
+const StyledPagination = styled(Pagination)({
+  marginTop: 20,
+  display: 'flex',
+  justifyContent: 'center',
+});
+
+const ProductList = ({
+  products, onEdit, onDelete, totalPages, currentPage, onPageChange,
+}) => (
+  <Container>
+    <Typography variant="h4" gutterBottom>
+      Product List
+    </Typography>
+    <StyledTableContainer component={Paper}>
+      <StyledTable>
+        <TableHead>
+          <TableRow>
+            <TableCell>ID</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Brand</TableCell>
+            <TableCell>Type</TableCell>
+            <TableCell>Created At</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {products.map((product) => (
+            <TableRow key={product.id}>
+              <TableCell>{product.id}</TableCell>
+              <TableCell>{product.name}</TableCell>
+              <TableCell>{product.brand}</TableCell>
+              <TableCell>{product.type}</TableCell>
+              <TableCell>{product.createdAt}</TableCell>
+              <TableCell>
+                <Tooltip title="Edit">
+                  <IconButton
+                    color="primary"
+                    onClick={() => onEdit(product)}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete">
+                  <IconButton
+                    color="secondary"
+                    onClick={() => onDelete(product.id)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </StyledTable>
+    </StyledTableContainer>
+    <StyledPagination
+      count={totalPages}
+      page={currentPage}
+      onChange={(e, page) => onPageChange(page)}
+    />
+  </Container>
+);
+
+ProductList.propTypes = {
+  products: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    brand: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    createdAt: PropTypes.string.isRequired,
+    variants: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      color: PropTypes.string.isRequired,
+      specification: PropTypes.string.isRequired,
+      size: PropTypes.string.isRequired,
+    })).isRequired,
+  })).isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  totalPages: PropTypes.number.isRequired,
+  currentPage: PropTypes.number.isRequired,
+  onPageChange: PropTypes.func.isRequired,
+};
+
+export default ProductList;
+
+
+
+
+/* eslint-disable import/no-extraneous-dependencies */
+import React from 'react';
+import PropTypes from 'prop-types';
+import {
+  Table, TableHead, TableBody, TableRow,
+  TableCell, Paper, TableContainer, Typography, IconButton, Tooltip, Pagination,
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { styled } from '@mui/system';
+
+const Container = styled('div')({
+  padding: '20px',
+});
+
+const StyledTableContainer = styled(TableContainer)({
+  marginBottom: '20px',
+});
+
+const StyledTable = styled(Table)({
+  minWidth: 650,
+});
+
+const StyledPagination = styled(Pagination)({
+  marginTop: 20,
+  display: 'flex',
+  justifyContent: 'center',
+});
+
+const ProductList = ({
+  products, onEdit, onDelete, totalPages, currentPage, onPageChange,
+}) => (
+  <Container>
+    <Typography variant="h4" gutterBottom>
+      Product List
+    </Typography>
+    <StyledTableContainer component={Paper}>
+      <StyledTable>
+        <TableHead>
+          <TableRow>
+            <TableCell>ID</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Brand</TableCell>
+            <TableCell>Type</TableCell>
+            <TableCell>Created At</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {products.map((product) => (
+            <TableRow key={product.id}>
+              <TableCell>{product.id}</TableCell>
+              <TableCell>{product.name}</TableCell>
+              <TableCell>{product.brand}</TableCell>
+              <TableCell>{product.type}</TableCell>
+              <TableCell>{product.createdAt}</TableCell>
+              <TableCell>
+                <Tooltip title="Edit">
+                  <IconButton
+                    color="primary"
+                    onClick={() => onEdit(product)}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete">
+                  <IconButton
+                    color="secondary"
+                    onClick={() => onDelete(product.id)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </StyledTable>
+    </StyledTableContainer>
+    <StyledPagination
+      count={totalPages}
+      page={currentPage}
+      onChange={(e, page) => onPageChange(page)}
+    />
+  </Container>
+);
+
+ProductList.propTypes = {
+  products: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    brand: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    createdAt: PropTypes.string.isRequired,
+    variants: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      color: PropTypes.string.isRequired,
+      specification: PropTypes.string.isRequired,
+      size: PropTypes.string.isRequired,
+    })).isRequired,
+  })).isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  totalPages: PropTypes.number.isRequired,
+  currentPage: PropTypes.number.isRequired,
+  onPageChange: PropTypes.func.isRequired,
+};
+
+export default ProductList;
+
+
+
+
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable jsx-a11y/label-has-associated-control */
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import {
+  TextField, Button, Grid, Paper, Typography, IconButton,
+} from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts } from '../slices/productsSlice';
+
+const ProductForm = ({ onSubmit }) => {
+  const [name, setName] = useState('');
+  const [brand, setBrand] = useState('');
+  const [type, setType] = useState('');
+  const [origin, setOrigin] = useState('');
+  const [variants, setVariants] = useState([{ color: '', specification: '', size: '' }]);
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const product = useSelector((state) => state
+    .products.products.find((p) => p.id === parseInt(id, 10)));
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (id) {
+      if (!product) {
+        dispatch(fetchProducts(id));
+      } else {
+        setName(product.name);
+        setBrand(product.brand);
+        setType(product.type);
+        setOrigin(product.origin);
+        setVariants(product.variants || [{ color: '', specification: '', size: '' }]);
+      }
+    } else {
+      setName('');
+      setBrand('');
+      setType('');
+      setOrigin('');
+      setVariants([{ color: '', specification: '', size: '' }]);
+    }
+  }, [dispatch, id, product]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit({
+      id, name, brand, type, origin, variants,
+    });
+    navigate('/products'); // Redirect to products list after submission
+  };
+
+  const handleBack = () => {
+    navigate('/products');
+  };
+
+  const handleAddVariant = () => {
+    setVariants([...variants, { color: '', specification: '', size: '' }]);
+  };
+
+  const handleRemoveVariant = (index) => {
+    setVariants(variants.filter((_, i) => i !== index));
+  };
+
+  const handleVariantChange = (index, field, value) => {
+    const newVariants = [...variants];
+    newVariants[index][field] = value;
+    setVariants(newVariants);
+  };
+
+  return (
+    <Paper style={{ padding: 16 }}>
+      <Typography variant="h6" gutterBottom>
+        <IconButton onClick={handleBack}>
+          <ArrowBackIcon />
+        </IconButton>
+        {id ? 'Edit Product' : 'Add Product'}
+      </Typography>
+      <form onSubmit={handleSubmit}>
+        <Grid container spacing={3}>
+          <Grid item xs={6}>
+            <TextField
+              label="Name"
+              fullWidth
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Brand"
+              fullWidth
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
+              required
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Type"
+              fullWidth
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              required
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Origin"
+              fullWidth
+              value={origin}
+              onChange={(e) => setOrigin(e.target.value)}
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6" gutterBottom>
+              Variants
+            </Typography>
+            {variants.map((variant, index) => (
+              <Grid container spacing={2} key={index}>
+                <Grid item xs={3}>
+                  <TextField
+                    label="Color"
+                    fullWidth
+                    value={variant.color}
+                    onChange={(e) => handleVariantChange(index, 'color', e.target.value)}
+                    required
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    label="Specification"
+                    fullWidth
+                    value={variant.specification}
+                    onChange={(e) => handleVariantChange(index, 'specification', e.target.value)}
+                    required
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    label="Size"
+                    fullWidth
+                    value={variant.size}
+                    onChange={(e) => handleVariantChange(index, 'size', e.target.value)}
+                    required
+                  />
+                </Grid>
+                <Grid item xs={3} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <IconButton onClick={handleAddVariant}>
+                    <AddIcon />
+                  </IconButton>
+                  <IconButton onClick={() => handleRemoveVariant(index)}>
+                    <RemoveIcon />
+                  </IconButton>
+                </Grid>
+              </Grid>
+            ))}
+          </Grid>
+          <Grid item xs={12}>
+            <Button variant="contained" color="primary" onClick={handleBack}>
+              Cancel
+            </Button>
+            <Button type="submit" variant="contained" color="primary" style={{ marginLeft: 16 }}>
+              Submit
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
+    </Paper>
+  );
+};
+
+ProductForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
+
+export default ProductForm;
+
+
+//pages
+
+/* eslint-disable import/no-extraneous-dependencies */
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, Route, Routes } from 'react-router-dom';
+import {
+  fetchProducts, addProduct, modifyProduct, removeProduct,
+} from '../slices/productsSlice';
+import ProductListWithButton from '../components/ProductListWithButton';
+import ProductForm from '../components/ProductForm';
+
+const ProductsPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { products, loading, error } = useSelector((state) => state.products);
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  const handleCreateOrUpdateProduct = (product) => {
+    if (product.id) {
+      dispatch(modifyProduct({ id: product.id, product }));
+    } else {
+      dispatch(addProduct(product));
+    }
+    navigate('/products'); // Redirect to products list after submission
+  };
+
+  const handleDeleteProduct = (id) => {
+    dispatch(removeProduct(id));
+  };
+
+  const handleEditProduct = (product) => {
+    navigate(`/products/edit/${product.id}`);
+  };
+
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={(
+          <ProductListWithButton
+            products={products}
+            loading={loading}
+            error={error}
+            onEdit={handleEditProduct}
+            onDelete={handleDeleteProduct}
+          />
+        )}
+      />
+      <Route
+        path="new"
+        element={<ProductForm onSubmit={handleCreateOrUpdateProduct} />}
+      />
+      <Route
+        path="edit/:id"
+        element={<ProductForm onSubmit={handleCreateOrUpdateProduct} />}
+      />
+    </Routes>
+  );
+};
+
+export default ProductsPage;
