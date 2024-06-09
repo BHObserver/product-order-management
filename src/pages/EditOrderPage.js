@@ -95,6 +95,9 @@ function EditOrderPage() {
               fullWidth
               value={totalQuantity}
               onChange={(e) => setTotalQuantity(parseInt(e.target.value, 10))}
+              InputProps={{
+                readOnly: true,
+              }}
               required
             />
           </Grid>
