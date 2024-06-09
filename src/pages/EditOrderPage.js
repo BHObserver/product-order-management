@@ -44,7 +44,10 @@ function EditOrderPage() {
 
   const handleDetailChange = (index, field, value) => {
     const newDetails = [...details];
-    newDetails[index][field] = value;
+    newDetails[index] = {
+      ...newDetails[index],
+      [field]: value,
+    };
     setDetails(newDetails);
   };
 
