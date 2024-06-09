@@ -19,7 +19,7 @@ export const fetchOrder = createAsyncThunk('orders/fetchOrder', async (id) => {
 // Add a new order
 export const addOrder = createAsyncThunk('orders/addOrder', async (order) => {
   const response = await createOrder(order);
-  return response;
+  return response.data;
 });
 
 // Update an existing order
