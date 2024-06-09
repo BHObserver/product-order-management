@@ -60,11 +60,12 @@ function SelectVariantsPage() {
       id,
       quantity: variantQuantities[id] || 0,
     }));
-    navigate(isEdit ? `/orders/edit/${location.state.order.id}/info` : '/orders/create/info', {
+    const order = location.state ? location.state.order : null;
+    navigate(isEdit ? `/orders/edit/${order.id}/info` : '/orders/create/info', {
       state: {
         selectedVariants: selectedVariantsWithQuantities,
         selectedProducts,
-        order: location.state.order,
+        order,
       },
     });
   };

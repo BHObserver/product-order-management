@@ -20,11 +20,16 @@ function OrdersPage() {
     navigate(`/orders/edit/${order.id}`, { state: { order } });
   };
 
+  const handleAddOrder = () => {
+    navigate('/orders/create');
+  };
+
   return (
     <div>
       <h1>Orders</h1>
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
+      <Button onClick={handleAddOrder}>Add Order</Button>
       <Table>
         <TableHead>
           <TableRow>

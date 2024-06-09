@@ -34,8 +34,9 @@ function SelectProductsPage() {
   };
 
   const handleNext = () => {
-    navigate(isEdit ? `/orders/edit/${location.state.order.id}/variants` : '/orders/create/variants', {
-      state: { selectedProducts, order: location.state.order },
+    const order = location.state ? location.state.order : null;
+    navigate(isEdit ? `/orders/edit/${order.id}/variants` : '/orders/create/variants', {
+      state: { selectedProducts, order },
     });
   };
 
