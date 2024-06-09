@@ -1,13 +1,17 @@
-/* eslint-disable import/no-extraneous-dependencies */
 // src/slices/productsSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {
-  getProducts, createProduct, updateProduct, deleteProduct,
+  getProducts, getProduct, createProduct, updateProduct, deleteProduct,
 } from '../services/api';
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
   const response = await getProducts();
   return response.data.data;
+});
+
+export const fetchProduct = createAsyncThunk('products/fetchProduct', async (productId) => {
+  const response = await getProduct(productId);
+  return response.data;
 });
 
 export const addProduct = createAsyncThunk('products/addProduct', async (product) => {
@@ -28,7 +32,7 @@ export const removeProduct = createAsyncThunk('products/removeProduct', async (i
 const productsSlice = createSlice({
   name: 'products',
   initialState: {
-    products: [],
+    items: {}, // Use an object to store products by id
     loading: false,
     error: null,
   },
@@ -41,23 +45,34 @@ const productsSlice = createSlice({
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload;
+        state.items = action.payload.reduce((acc, product) => {
+          acc[product.id] = product;
+          return acc;
+        }, {});
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
+      .addCase(fetchProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items[action.payload.id] = action.payload;
+      })
+      .addCase(fetchProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
       .addCase(addProduct.fulfilled, (state, action) => {
-        state.products.push(action.payload);
+        state.items[action.payload.id] = action.payload;
       })
       .addCase(modifyProduct.fulfilled, (state, action) => {
-        const index = state.products.findIndex((product) => product.id === action.payload.id);
-        if (index !== -1) {
-          state.products[index] = action.payload;
-        }
+        state.items[action.payload.id] = action.payload;
       })
       .addCase(removeProduct.fulfilled, (state, action) => {
-        state.products = state.products.filter((product) => product.id !== action.payload);
+        delete state.items[action.payload];
       });
   },
 });

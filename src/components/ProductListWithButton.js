@@ -5,7 +5,7 @@ import {
   Table, TableHead, TableBody, TableRow,
   TableCell, Paper, TableContainer, Typography, IconButton, Tooltip, Pagination, Button,
 } from '@mui/material';
-import ViewIcon from '@mui/icons-material/VisibilityOutlined';
+
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/system';
@@ -40,6 +40,10 @@ const ProductList = ({
   products, onEdit, onDelete, totalPages, currentPage, onPageChange,
 }) => {
   const navigate = useNavigate();
+
+  if (!Array.isArray(products)) {
+    return <p>No products found.</p>;
+  }
 
   return (
     <Container>

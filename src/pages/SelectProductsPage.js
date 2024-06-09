@@ -10,7 +10,7 @@ import { fetchProducts } from '../slices/productsSlice';
 function SelectProductsPage() {
   const dispatch = useDispatch();
   const location = useLocation();
-  const { products, loading, error } = useSelector((state) => state.products);
+  const { items, loading, error } = useSelector((state) => state.products);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const navigate = useNavigate();
   const isEdit = location.state && location.state.order;
@@ -40,6 +40,9 @@ function SelectProductsPage() {
     });
   };
 
+  // Convert items object to an array
+  const productsArray = Object.values(items);
+
   return (
     <div>
       <h1>Select Products</h1>
@@ -56,7 +59,7 @@ function SelectProductsPage() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {products.map((product) => (
+          {productsArray.map((product) => (
             <TableRow key={product.id}>
               <TableCell>{product.id}</TableCell>
               <TableCell>{product.name}</TableCell>

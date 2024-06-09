@@ -5,13 +5,13 @@ import { useNavigate, Route, Routes } from 'react-router-dom';
 import {
   fetchProducts, addProduct, modifyProduct, removeProduct,
 } from '../slices/productsSlice';
-import ProductListWithButton from '../components/ProductListWithButton';
+import ProductList from '../components/ProductList';
 import ProductForm from '../components/ProductForm';
 
 const ProductsPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { products, loading, error } = useSelector((state) => state.products);
+  const { items: products, loading, error } = useSelector((state) => state.products);
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -34,17 +34,23 @@ const ProductsPage = () => {
     navigate(`/products/edit/${product.id}`);
   };
 
+  // Convert products object to an array
+  const productArray = Object.values(products);
+
   return (
     <Routes>
       <Route
         path="/"
         element={(
-          <ProductListWithButton
-            products={products}
+          <ProductList
+            products={productArray}
             loading={loading}
             error={error}
             onEdit={handleEditProduct}
             onDelete={handleDeleteProduct}
+            totalPages={1} // Example value, you might want to fetch this dynamically
+            currentPage={1} // Example value, you might want to fetch this dynamically
+            onPageChange={(page) => console.log('Page change', page)}
           />
         )}
       />

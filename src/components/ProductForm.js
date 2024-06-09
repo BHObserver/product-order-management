@@ -11,7 +11,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts } from '../slices/productsSlice';
+import { fetchProduct } from '../slices/productsSlice';
 
 const ProductForm = ({ onSubmit }) => {
   const [name, setName] = useState('');
@@ -21,14 +21,13 @@ const ProductForm = ({ onSubmit }) => {
   const [variants, setVariants] = useState([{ color: '', specification: '', size: '' }]);
   const { id } = useParams();
   const dispatch = useDispatch();
-  const product = useSelector((state) => state
-    .products.products.find((p) => p.id === parseInt(id, 10)));
+  const product = useSelector((state) => state.products.items[id]);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
       if (!product) {
-        dispatch(fetchProducts(id));
+        dispatch(fetchProduct(id));
       } else {
         setName(product.name);
         setBrand(product.brand);
