@@ -5,10 +5,100 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  TextField, Button, Paper, Typography, Grid, FormControl, InputLabel, Select, MenuItem,
+  TextField, Button, Paper, Typography, Grid, FormControl,
+  InputLabel, Select, MenuItem, IconButton,
 } from '@mui/material';
+import { styled } from '@mui/system';
+import CircularProgress from '@mui/material/CircularProgress';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { fetchOrder, modifyOrder } from '../slices/ordersSlice';
 import { fetchProduct } from '../slices/productsSlice';
+
+const Container = styled(Paper)({
+  padding: '32px',
+  marginTop: '20px',
+  borderRadius: '8px',
+});
+
+const Title = styled(Typography)({
+  marginBottom: '16px',
+  fontWeight: 'bold',
+});
+
+const Form = styled('form')({
+  marginTop: '16px',
+});
+
+const StyledTextField = styled(TextField)({
+  '& label.Mui-focused': {
+    color: '#1976d2',
+  },
+  '& .MuiInput-underline:after': {
+    borderBottomColor: '#1976d2',
+  },
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: '#ccc',
+    },
+    '&:hover fieldset': {
+      borderColor: '#1976d2',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: '#1976d2',
+    },
+  },
+});
+
+const StyledFormControl = styled(FormControl)({
+  '& label.Mui-focused': {
+    color: '#1976d2',
+  },
+  '& .MuiInput-underline:after': {
+    borderBottomColor: '#1976d2',
+  },
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: '#ccc',
+    },
+    '&:hover fieldset': {
+      borderColor: '#1976d2',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: '#1976d2',
+    },
+  },
+});
+
+const FormActions = styled('div')({
+  display: 'flex',
+  justifyContent: 'flex-end',
+  marginTop: '16px',
+  gap: '10px',
+});
+
+const StyledButton = styled(Button)({
+  marginRight: '10px',
+  backgroundColor: '#4f5b62',
+  color: 'white',
+  '&:hover': {
+    backgroundColor: '#3b4a53',
+  },
+});
+
+const BackButton = styled(Button)({
+  color: '#3b4a53',
+  border: '1px solid #3b4a53',
+  '&:hover': {
+    backgroundColor: '#f1f1f1',
+    borderColor: '#3b4a53',
+  },
+});
+
+const LoadingContainer = styled(Container)({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+});
 
 function EditOrderPage() {
   const { id } = useParams();
@@ -46,7 +136,7 @@ function EditOrderPage() {
     const newDetails = [...details];
     newDetails[index] = {
       ...newDetails[index],
-      [field]: value,
+      [field]: field === 'quantity' && value < 0 ? 0 : value,
     };
     setDetails(newDetails);
   };
@@ -78,21 +168,30 @@ function EditOrderPage() {
     }
   };
 
-  if (orderLoading || productsLoading) return <p>Loading...</p>;
+  if (orderLoading || productsLoading) {
+    return (
+      <LoadingContainer>
+        <CircularProgress />
+      </LoadingContainer>
+    );
+  }
+
   if (orderError) return <p style={{ color: 'red' }}>{orderError}</p>;
   if (productsError) return <p style={{ color: 'red' }}>{productsError}</p>;
+
   if (!order) return <p>No order found.</p>;
 
   return (
-    <Paper style={{ padding: 16 }}>
-      <Typography variant="h6" gutterBottom>
+    <Container>
+      <Title variant="h6" gutterBottom>
         Edit Order
-      </Typography>
-      <form onSubmit={handleSubmit}>
+      </Title>
+      <Form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
-            <TextField
+            <StyledTextField
               label="Name"
+              variant="outlined"
               fullWidth
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -100,8 +199,9 @@ function EditOrderPage() {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
+            <StyledTextField
               label="Email"
+              variant="outlined"
               fullWidth
               type="email"
               value={email}
@@ -110,8 +210,9 @@ function EditOrderPage() {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
+            <StyledTextField
               label="Address"
+              variant="outlined"
               fullWidth
               value={address}
               onChange={(e) => setAddress(e.target.value)}
@@ -122,7 +223,7 @@ function EditOrderPage() {
             {details.map((detail, index) => (
               <Grid container spacing={2} key={index}>
                 <Grid item xs={4}>
-                  <FormControl fullWidth>
+                  <StyledFormControl fullWidth>
                     <InputLabel>Product</InputLabel>
                     <Select
                       value={detail.variant?.product_id || ''}
@@ -135,10 +236,10 @@ function EditOrderPage() {
                         </MenuItem>
                       ))}
                     </Select>
-                  </FormControl>
+                  </StyledFormControl>
                 </Grid>
                 <Grid item xs={4}>
-                  <FormControl fullWidth>
+                  <StyledFormControl fullWidth>
                     <InputLabel>Variant</InputLabel>
                     <Select
                       value={detail.variant_id || ''}
@@ -154,11 +255,12 @@ function EditOrderPage() {
                         </MenuItem>
                       ))}
                     </Select>
-                  </FormControl>
+                  </StyledFormControl>
                 </Grid>
                 <Grid item xs={2}>
-                  <TextField
+                  <StyledTextField
                     label="Quantity"
+                    variant="outlined"
                     fullWidth
                     type="number"
                     value={detail.quantity}
@@ -167,9 +269,12 @@ function EditOrderPage() {
                   />
                 </Grid>
                 <Grid item xs={2}>
-                  <Button variant="outlined" color="secondary" onClick={() => handleRemoveProduct(index)}>
-                    Remove
-                  </Button>
+                  <IconButton
+                    color="secondary"
+                    onClick={() => handleRemoveProduct(index)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
                 </Grid>
               </Grid>
             ))}
@@ -178,16 +283,24 @@ function EditOrderPage() {
             </Button>
           </Grid>
           <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary" style={{ marginRight: 8 }}>
-              Submit
-            </Button>
-            <Button onClick={() => navigate('/orders')} variant="outlined">
-              Back
-            </Button>
+            <FormActions>
+              <BackButton
+                onClick={() => navigate('/orders')}
+                variant="outlined"
+              >
+                Back
+              </BackButton>
+              <StyledButton
+                type="submit"
+                variant="contained"
+              >
+                Submit
+              </StyledButton>
+            </FormActions>
           </Grid>
         </Grid>
-      </form>
-    </Paper>
+      </Form>
+    </Container>
   );
 }
 
