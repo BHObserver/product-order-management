@@ -1,4 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
+// Disables ESLint rule for importing dependencies that are not listed in package.json
+
+/* Importing necessary modules and components from React, PropTypes,
+ Material-UI, React Router, and styled-components */
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -14,6 +18,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/system';
 
+// Custom styled components for layout and styling
 const Container = styled('div')({
   padding: '20px',
 });
@@ -74,24 +79,28 @@ const IconStyle = styled(InventoryRoundedIcon)({
   color: '#37474f',
 });
 
+// Functional component to render the product list
 const ProductList = ({
   products, onEdit, onDelete, totalPages, currentPage, onPageChange, loading,
 }) => {
   const navigate = useNavigate();
 
+  // Handler to navigate to the product detail page
   const handleView = (productId) => {
     navigate(`/products/${productId}`);
   };
 
+  // Display a loading spinner if data is being fetched
   if (loading) {
     return <Box display="flex" justifyContent="center"><CircularProgress /></Box>;
   }
 
+  // Display a message if no products are found
   if (!Array.isArray(products) || products.length === 0) {
     return <Typography>No products found.</Typography>;
   }
 
-  // Sort products by id in descending order
+  // Sort products by ID in descending order
   const sortedProducts = products.slice().sort((a, b) => b.id - a.id);
 
   return (
@@ -170,6 +179,7 @@ const ProductList = ({
   );
 };
 
+// PropTypes to validate the props passed to the component
 ProductList.propTypes = {
   products: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number.isRequired,
@@ -192,4 +202,5 @@ ProductList.propTypes = {
   loading: PropTypes.bool.isRequired,
 };
 
+// Exporting the ProductList component as the default export
 export default ProductList;

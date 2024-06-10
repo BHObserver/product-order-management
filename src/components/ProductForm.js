@@ -1,5 +1,10 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable import/no-extraneous-dependencies */
+/* Disables ESLint rules for using array index as key and importing
+dependencies not listed in package.json */
+
+/*  Importing necessary modules and components from React, PropTypes, Material-UI,
+React Router, Redux, and styled-components */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -19,6 +24,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { styled } from '@mui/system';
 import { fetchProduct } from '../slices/productsSlice';
 
+// Custom styled components for layout and styling
 const StyledPaper = styled(Paper)({
   padding: '20px',
 });
@@ -51,17 +57,21 @@ const BackButton = styled(Button)({
   },
 });
 
+// Functional component to handle the product form
 const ProductForm = ({ onSubmit }) => {
+  // Define state variables for form fields and variants
   const [name, setName] = useState('');
   const [brand, setBrand] = useState('');
   const [type, setType] = useState('');
   const [origin, setOrigin] = useState('');
   const [variants, setVariants] = useState([{ color: '', specification: '', size: '' }]);
-  const { id } = useParams();
-  const dispatch = useDispatch();
+  const { id } = useParams(); // Retrieve product ID from URL parameters
+  const dispatch = useDispatch(); // Dispatch function for Redux actions
+  /* Select product from Redux store */
   const product = useSelector((state) => state.products.items[id]);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Navigation function from React Router
 
+  // Effect to fetch product data if editing an existing product
   useEffect(() => {
     if (id) {
       if (!product) {
@@ -82,6 +92,7 @@ const ProductForm = ({ onSubmit }) => {
     }
   }, [dispatch, id, product]);
 
+  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit({
@@ -90,18 +101,22 @@ const ProductForm = ({ onSubmit }) => {
     navigate('/products');
   };
 
+  // Navigate back to the product list
   const handleBack = () => {
     navigate('/products');
   };
 
+  // Add a new variant to the variants array
   const handleAddVariant = () => {
     setVariants([...variants, { color: '', specification: '', size: '' }]);
   };
 
+  // Remove a variant from the variants array
   const handleRemoveVariant = (index) => {
     setVariants(variants.filter((_, i) => i !== index));
   };
 
+  // Handle changes in variant fields
   const handleVariantChange = (index, field, value) => {
     const newVariants = [...variants];
     newVariants[index][field] = value;
@@ -214,8 +229,10 @@ const ProductForm = ({ onSubmit }) => {
   );
 };
 
+// PropTypes to validate the props passed to the component
 ProductForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
 
+// Exporting the ProductForm component as the default export
 export default ProductForm;

@@ -1,4 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
+// Disables ESLint rule for importing dependencies not listed in package.json
+
+// Import necessary modules and components from React, PropTypes, Material-UI, and React Router
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -12,6 +15,7 @@ import {
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 
+// Custom styled components for layout and styling using Material-UI's theme
 const RootPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
   marginBottom: theme.spacing(2),
@@ -25,17 +29,21 @@ const BackButton = styled(Button)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
 
+// Functional component to display the details of a product
 const ProductDetails = ({ product }) => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Navigation function from React Router
 
   return (
     <RootPaper>
+      {/* Button to navigate back to the product list */}
       <BackButton variant="contained" onClick={() => navigate('/products')}>
         Back
       </BackButton>
+      {/* Display product name */}
       <HeadingTypography variant="h4">
         {product.name}
       </HeadingTypography>
+      {/* List to display product details */}
       <List>
         <ListItem>
           <ListItemText primary={`Brand: ${product.brand}`} />
@@ -47,7 +55,9 @@ const ProductDetails = ({ product }) => {
           <ListItemText primary={`Created At: ${new Date(product.created_at).toLocaleDateString()}`} />
         </ListItem>
       </List>
+      {/* Heading for product variants */}
       <HeadingTypography variant="h5">Variants</HeadingTypography>
+      {/* List to display each variant of the product */}
       <List>
         {product.variants.map((variant) => (
           <React.Fragment key={variant.id}>
@@ -67,6 +77,7 @@ const ProductDetails = ({ product }) => {
   );
 };
 
+// PropTypes to validate the props passed to the component
 ProductDetails.propTypes = {
   product: PropTypes.shape({
     name: PropTypes.string.isRequired,
@@ -84,4 +95,5 @@ ProductDetails.propTypes = {
   }).isRequired,
 };
 
+// Exporting the ProductDetails component as the default export
 export default ProductDetails;
