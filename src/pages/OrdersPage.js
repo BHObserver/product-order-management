@@ -15,26 +15,44 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { styled } from '@mui/system';
 import { fetchOrders, removeOrder } from '../slices/ordersSlice';
 
-const HeaderContainer = styled('div')({
+const HeaderContainer = styled('div')(({ theme }) => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
   marginBottom: '20px',
   marginTop: '25px',
-});
+  [theme.breakpoints.down('sm')]: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
+}));
 
-const StyledTableContainer = styled(TableContainer)({
+const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
   marginBottom: '20px',
-});
-
-const StyledTable = styled(Table)({
   minWidth: 650,
-});
+  [theme.breakpoints.down('sm')]: {
+    minWidth: '100%',
+    overflowX: 'auto',
+  },
+}));
 
-const StyledTableCell = styled(TableCell)({
+const StyledTable = styled(Table)(({ theme }) => ({
+  minWidth: 650,
+  [theme.breakpoints.down('sm')]: {
+    minWidth: '100%',
+    '& th, & td': {
+      padding: '8px',
+    },
+  },
+}));
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
   border: '1px solid #e0e0e0',
   padding: '10px',
-});
+  [theme.breakpoints.down('sm')]: {
+    padding: '8px',
+  },
+}));
 
 const StyledTableRow = styled(TableRow)(() => ({
   '&:nth-of-type(odd)': {
@@ -45,23 +63,29 @@ const StyledTableRow = styled(TableRow)(() => ({
   },
 }));
 
-const StyledTableHeadCell = styled(StyledTableCell)({
+const StyledTableHeadCell = styled(StyledTableCell)(() => ({
   backgroundColor: '#4f5b62',
   color: 'white',
   fontWeight: 'bold',
-});
+}));
 
-const ProductListHeading = styled(Typography)({
+const ProductListHeading = styled(Typography)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   color: '#37474f',
-});
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '1.2rem',
+  },
+}));
 
-const IconStyle = styled(ShoppingCartIcon)({
+const IconStyle = styled(ShoppingCartIcon)(({ theme }) => ({
   marginRight: '10px',
   fontSize: '32px',
   color: '#37474f',
-});
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '24px',
+  },
+}));
 
 function OrdersPage() {
   const dispatch = useDispatch();
