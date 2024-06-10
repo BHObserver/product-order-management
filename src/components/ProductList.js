@@ -14,9 +14,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/system';
 
-const Container = styled('div')({
+const Container = styled('div')(({ theme }) => ({
   padding: '20px',
-});
+  [theme.breakpoints.down('sm')]: {
+    padding: '10px',
+  },
+}));
 
 const HeaderContainer = styled('div')({
   display: 'flex',
@@ -26,14 +29,24 @@ const HeaderContainer = styled('div')({
   marginTop: '25px',
 });
 
-const StyledTableContainer = styled(TableContainer)({
+const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
   marginBottom: '20px',
   minWidth: 650,
-});
+  [theme.breakpoints.down('sm')]: {
+    minWidth: '100%',
+    overflowX: 'auto',
+  },
+}));
 
-const StyledTable = styled(Table)({
+const StyledTable = styled(Table)(({ theme }) => ({
   minWidth: 650,
-});
+  [theme.breakpoints.down('sm')]: {
+    minWidth: '100%',
+    '& th, & td': {
+      padding: '8px',
+    },
+  },
+}));
 
 const StyledPagination = styled(Pagination)({
   marginTop: 20,
@@ -41,17 +54,20 @@ const StyledPagination = styled(Pagination)({
   justifyContent: 'center',
 });
 
-const StyledTableCell = styled(TableCell)({
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
   textAlign: 'center',
   border: '1px solid #e0e0e0',
   padding: '10px',
-});
+  [theme.breakpoints.down('sm')]: {
+    padding: '8px',
+  },
+}));
 
-const StyledTableHeadCell = styled(StyledTableCell)({
+const StyledTableHeadCell = styled(StyledTableCell)(() => ({
   backgroundColor: '#4f5b62',
   color: 'white',
   fontWeight: 'bold',
-});
+}));
 
 const StyledTableRow = styled(TableRow)(() => ({
   '&:nth-of-type(odd)': {
@@ -62,17 +78,23 @@ const StyledTableRow = styled(TableRow)(() => ({
   },
 }));
 
-const ProductListHeading = styled(Typography)({
+const ProductListHeading = styled(Typography)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   color: '#37474f',
-});
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '1.2rem',
+  },
+}));
 
-const IconStyle = styled(InventoryRoundedIcon)({
+const IconStyle = styled(InventoryRoundedIcon)(({ theme }) => ({
   marginRight: '10px',
   fontSize: '32px',
   color: '#37474f',
-});
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '24px',
+  },
+}));
 
 const ProductList = ({
   products, onEdit, onDelete, totalPages, currentPage, onPageChange, loading,
