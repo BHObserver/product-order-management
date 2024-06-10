@@ -25,9 +25,6 @@
 - [💻 Getting Started](#getting-started)
   - [Setup](#setup)
   - [Prerequisites](#prerequisites)
-  - [Install](#install)
-  - [Usage](#usage)
-  - [Run tests](#run-tests)
   - [Deployment](#deployment)
 - [👥 Authors](#authors)
 - [🔭 Future Features](#future-features)
@@ -75,7 +72,7 @@
 
 ### LIVE DEMO
 
-> Watch [live]() demo of the app or visit the app [page]() to use the app.
+> To visit the app click [LIVE](https://stock-track.onrender.com/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -114,19 +111,6 @@ npm start
 2. Github
 3. Internet Browser
 
-
-### Usage
-
-To run the project, execute the following command:
-
-```sh
-npm start
-```
-### Run tests
-To test the project, execute the following command:
-```sh
-npm test
-```
 ### Deployment
 
 You can deploy this project using:
@@ -144,7 +128,7 @@ You can deploy this project using:
 
 - GitHub: [@BHObserver](https://github.com/BHObserver)
 - Twitter: [@BurhanU14173360](https://twitter.com/BurhanU14173360)
-- LinkedIn: [bhobserver](https://www.linkedin.com/in/hans-dev)
+- LinkedIn: [hans-dev](https://www.linkedin.com/in/hans-dev)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
