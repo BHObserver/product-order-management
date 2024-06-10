@@ -9,7 +9,7 @@
 
 <!-- MAIN HEADING -->
 
-  <h3><b>Stock Track</b></h3>
+  <h3><b>STOCK TRACK</b></h3>
 
 </div>
 
