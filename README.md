@@ -20,7 +20,6 @@
   - [🛠 Built With](#built-with)
     - [Tech Stack](#tech-stack)
     - [Key Features](#key-features)
-- [📝 Kanban Board](#kanban-board)
 - [🚀 Live Demo](#live-demo)
 - [🚀 API Link](#back-end)
 - [💻 Getting Started](#getting-started)
@@ -41,7 +40,7 @@
 <!-- INTRO -->
 # 📖 Stock Track <a name="about-project"></a>
 
-> - 
+> - **Stock Track** is a React.js-based product and order management system designed for efficient inventory control. It allows users to create, view, update, and delete products with multiple variants and manage orders by selecting products and specifying quantities. The application ensures smooth interaction with APIs and features a user-friendly interface built according to a provided design reference.
 
 ## 🛠 Built With <a name="built-with"></a>
 1. React
@@ -62,7 +61,11 @@
 <!-- Features -->
 
 ### Key Features <a name="key-features"></a>
-
+1. **Product Management**: Create, view, update, and delete products with multiple variants.
+2. **Order Management**: Create, view, update, and delete orders, selecting multiple products and variants.
+3. **API Interaction**: Handle all CRUD operations through provided APIs.
+4. **User Interface**: Intuitive and user-friendly, adhering to a provided design reference.
+5. **Technical Stack**: Built with React.js, utilizing state management (React Context/Redux) and well-documented code.
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
